@@ -1,0 +1,272 @@
+[
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "Document",
+        "importPath": "docx",
+        "description": "docx",
+        "isExtraImport": true,
+        "detail": "docx",
+        "documentation": {}
+    },
+    {
+        "label": "Inches",
+        "importPath": "docx.shared",
+        "description": "docx.shared",
+        "isExtraImport": true,
+        "detail": "docx.shared",
+        "documentation": {}
+    },
+    {
+        "label": "RGBColor",
+        "importPath": "docx.shared",
+        "description": "docx.shared",
+        "isExtraImport": true,
+        "detail": "docx.shared",
+        "documentation": {}
+    },
+    {
+        "label": "WD_TABLE_ALIGNMENT",
+        "importPath": "docx.enum.table",
+        "description": "docx.enum.table",
+        "isExtraImport": true,
+        "detail": "docx.enum.table",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
+        "documentation": {}
+    },
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "send_file",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "index",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def index():\n    return send_file('schedule.html')\n# API路由\n@app.route('/api/courses', methods=['GET'])\ndef get_courses():\n    \"\"\"获取所有课程\"\"\"\n    return jsonify(courses_data_store)\n@app.route('/api/courses', methods=['POST'])\ndef add_course():\n    \"\"\"添加课程\"\"\"",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "get_courses",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def get_courses():\n    \"\"\"获取所有课程\"\"\"\n    return jsonify(courses_data_store)\n@app.route('/api/courses', methods=['POST'])\ndef add_course():\n    \"\"\"添加课程\"\"\"\n    try:\n        course_data = request.json\n        courses_data_store.append(course_data)\n        return jsonify({\"success\": True, \"message\": \"课程添加成功\"})",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "add_course",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def add_course():\n    \"\"\"添加课程\"\"\"\n    try:\n        course_data = request.json\n        courses_data_store.append(course_data)\n        return jsonify({\"success\": True, \"message\": \"课程添加成功\"})\n    except Exception as e:\n        return jsonify({\"success\": False, \"message\": str(e)}), 400\n@app.route('/api/courses/conflicts', methods=['POST'])\ndef check_conflicts():",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "check_conflicts",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def check_conflicts():\n    \"\"\"检查课程冲突\"\"\"\n    try:\n        from io import StringIO\n        import sys\n        # 保存原始的stdout\n        old_stdout = sys.stdout\n        sys.stdout = StringIO()\n        data = request.json\n        courses = data.get('courses', [])",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "export_excel",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def export_excel():\n    \"\"\"导出为Excel\"\"\"\n    try:\n        data = request.json\n        courses = data.get('courses', [])\n        df = pd.DataFrame(courses)\n        # 生成Excel文件\n        filename = \"课程表.xlsx\"\n        filepath = generate_excel(df, filename)\n        # 返回文件",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "export_word",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def export_word():\n    \"\"\"导出为Word\"\"\"\n    try:\n        data = request.json\n        courses = data.get('courses', [])\n        user_selected_colors = data.get('userSelectedColors', {})\n        df = pd.DataFrame(courses)\n        # 生成Word文件\n        filename = \"课程表.docx\"\n        filepath = generate_word(df, filename, user_selected_colors)",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "get_course_color",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def get_course_color(course_name, user_selected_colors=None):\n    \"\"\"\n    获取课程颜色，优先级：\n    1. 用户选择的颜色\n    2. 预定义的颜色映射\n    3. 自动分配默认颜色\n    \"\"\"\n    # 如果用户选择了颜色，则优先使用用户选择的颜色\n    if user_selected_colors and course_name in user_selected_colors:\n        color = user_selected_colors[course_name]",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "detect_conflicts",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def detect_conflicts(course_data):\n    \"\"\"检测课程冲突：同一教师在同一时间的课程安排\"\"\"\n    conflicts = []\n    # 按教师和时间分组检查\n    if \"教师\" in course_data.columns and \"星期\" in course_data.columns and \"节次\" in course_data.columns:\n        grouped = course_data.groupby([\"教师\", \"星期\", \"节次\"])\n        for key, group in grouped:\n            if len(group) > 1:\n                conflicts.append(f\"冲突：教师{key[0]}在{key[1]}{key[2]}节有{len(group)}门课程\")\n    # 检查同一班级在同一时间的课程安排",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "generate_excel",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def generate_excel(course_data, output_file=\"课程表.xlsx\"):\n    \"\"\"生成Excel格式课程表\"\"\"\n    # 创建透视表，包含更多信息\n    try:\n        # 确保必要的列存在\n        required_columns = [\"节次\", \"星期\", \"课程名称\"]\n        if all(col in course_data.columns for col in required_columns):\n            pivot_table = course_data.pivot_table(\n                index=\"节次\", \n                columns=\"星期\", ",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "set_cell_background_color",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def set_cell_background_color(cell, color):\n    \"\"\"设置单元格背景颜色\"\"\"\n    # 将RGB颜色值转换为十六进制\n    hex_color = '{:02x}{:02x}{:02x}'.format(*color)\n    # 创建XML元素来设置背景色\n    from docx.oxml.shared import OxmlElement, qn\n    tc_pr = cell._tc.get_or_add_tcPr()\n    shd = OxmlElement('w:shd')\n    shd.set(qn('w:fill'), hex_color)\n    tc_pr.append(shd)",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "generate_word",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def generate_word(course_data, output_file=\"课程表.docx\", user_selected_colors=None):\n    \"\"\"生成Word格式课程表\"\"\"\n    doc = Document()\n    doc.add_heading(\"课程表\", level=1)\n    # 确保必要的列存在\n    required_columns = [\"节次\", \"星期\", \"课程名称\"]\n    if not all(col in course_data.columns for col in required_columns):\n        doc.add_paragraph(\"数据格式不正确，缺少必要列\")\n        doc.save(output_file)\n        return output_file",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "load_course_data_from_excel",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def load_course_data_from_excel(file_path):\n    \"\"\"\n    从Excel文件加载课程数据\n    \"\"\"\n    try:\n        df = pd.read_excel(file_path)\n        return df\n    except Exception as e:\n        print(f\"读取Excel文件失败: {e}\")\n        return None",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "load_course_data_from_json",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def load_course_data_from_json(file_path):\n    \"\"\"\n    从JSON文件加载课程数据\n    \"\"\"\n    try:\n        with open(file_path, 'r', encoding='utf-8') as f:\n            data = json.load(f)\n        df = pd.DataFrame(data)\n        return df\n    except Exception as e:",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def main():\n    # 模拟输入数据（实际应用中从前端或导入文件获取）\n    data = {\n        \"课程名称\": [\"语文\", \"数学\", \"英语\", \"体育\", \"音乐\", \"美术\"],\n        \"教师\": [\"张三\", \"李四\", \"王五\", \"赵六\", \"钱七\", \"孙八\"],\n        \"星期\": [\"周一\", \"周二\", \"周三\", \"周四\", \"周五\", \"周一\"],\n        \"节次\": [1, 2, 3, 4, 5, 1],\n        \"地点\": [\"101教室\", \"102教室\", \"103教室\", \"操场\", \"音乐室\", \"美术室\"]\n    }\n    course_data = pd.DataFrame(data)",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "app = Flask(__name__, static_folder='.', static_url_path='')\n# 颜色映射规则（基于需求分析报告）\nCOLOR_MAP = {\n    \"语文\": (255, 204, 204),    # 粉色\n    \"数学\": (204, 255, 255),    # 浅蓝色\n    \"英语\": (204, 255, 204),    # 绿色\n    \"综研\": (229, 229, 204),    # 浅绿色\n    \"趣味体育\": (255, 255, 153), # 黄色\n    \"体育\": (153, 204, 255),    # 蓝色\n    \"音乐\": (221, 170, 221),    # 浅紫色",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR_MAP",
+        "kind": 5,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "COLOR_MAP = {\n    \"语文\": (255, 204, 204),    # 粉色\n    \"数学\": (204, 255, 255),    # 浅蓝色\n    \"英语\": (204, 255, 204),    # 绿色\n    \"综研\": (229, 229, 204),    # 浅绿色\n    \"趣味体育\": (255, 255, 153), # 黄色\n    \"体育\": (153, 204, 255),    # 蓝色\n    \"音乐\": (221, 170, 221),    # 浅紫色\n    \"体育与健康\": (153, 204, 255), # 浅蓝色\n    \"道法\": (204, 153, 204),    # 紫色",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "DEFAULT_COLORS",
+        "kind": 5,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "DEFAULT_COLORS = [\n    (255, 192, 203),  # 粉色\n    (173, 216, 230),  # 浅蓝\n    (144, 238, 144),  # 浅绿\n    (255, 182, 193),  # 浅粉红\n    (221, 160, 221),  # 梅花色\n    (175, 238, 238),  # 浅青色\n    (255, 218, 185),  # 桃色\n    (240, 230, 140),  # 卡其色\n    (230, 230, 250),  # 薰衣草色",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
+        "label": "courses_data_store",
+        "kind": 5,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "courses_data_store = []\n# 根路由，返回前端页面\n@app.route('/')\ndef index():\n    return send_file('schedule.html')\n# API路由\n@app.route('/api/courses', methods=['GET'])\ndef get_courses():\n    \"\"\"获取所有课程\"\"\"\n    return jsonify(courses_data_store)",
+        "detail": "schedule",
+        "documentation": {}
+    }
+]
