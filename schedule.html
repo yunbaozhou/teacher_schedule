@@ -128,6 +128,9 @@
                     <button id="export-word" class="bg-blue-600 text-white py-1 px-3 rounded-md text-sm hover:bg-blue-700 transition-colors">
                         <i class="fas fa-file-word mr-1"></i>Word
                     </button>
+                    <button id="print-schedule" class="bg-purple-600 text-white py-1 px-3 rounded-md text-sm hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-print mr-1"></i>打印
+                    </button>
                 </div>
             </div>
 
@@ -377,6 +380,7 @@
             // 绑定事件
             document.getElementById('export-excel').addEventListener('click', exportToExcel);
             document.getElementById('export-word').addEventListener('click', exportToWord);
+            document.getElementById('print-schedule').addEventListener('click', printSchedule);
             
             // 模态框事件
             document.querySelector('.close-modal').addEventListener('click', closeModal);
@@ -817,6 +821,119 @@
                 alert('导出Word失败: ' + error.message);
             });
         }
+        
+        // 导出到图片
+        function exportToImage() {
+            if (courseData.length === 0) {
+                alert('请先添加课程数据');
+                return;
+            }
+            
+            alert('图片导出功能已触发。在完整应用中，这将生成并下载图片文件。');
+            // 在实际应用中，这里会使用html2canvas等库生成图片
+        }
+        
+        // 打印课程表
+        function printSchedule() {
+            // 获取课表标题
+            const timetableTitle = document.getElementById('timetable-title').value || '课程表';
+            
+            // 创建打印窗口
+            const printWindow = window.open('', '_blank');
+            
+            // 获取表格HTML并进行处理
+            const table = document.getElementById('course-table').cloneNode(true);
+            
+            // 移除事件监听器相关的属性
+            table.querySelectorAll('*').forEach(element => {
+                element.removeAttribute('data-period');
+                element.removeAttribute('data-day');
+                element.removeAttribute('id');
+            });
+            
+            // 复制课程卡片样式
+            document.querySelectorAll('.course-card').forEach(card => {
+                const cloneCard = card.cloneNode(true);
+                const index = card.dataset.index;
+                const originalCard = table.querySelector(`.course-card[data-index="${index}"]`);
+                if (originalCard) {
+                    originalCard.outerHTML = cloneCard.outerHTML;
+                }
+            });
+            
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>${timetableTitle}</title>
+                        <style>
+                            body {
+                                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                                margin: 20px;
+                            }
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 20px;
+                            }
+                            th, td {
+                                border: 1px solid #ddd;
+                                padding: 8px;
+                                text-align: center;
+                                vertical-align: top;
+                            }
+                            thead th {
+                                background-color: #f3f4f6;
+                                font-weight: bold;
+                                padding: 8px;
+                            }
+                            .time-period {
+                                background-color: #e5e7eb;
+                                font-weight: bold;
+                                text-align: center;
+                                padding: 8px;
+                            }
+                            .course-card {
+                                font-size: 12px;
+                                text-align: left;
+                                padding: 8px;
+                                margin: 2px;
+                                border-radius: 6px;
+                                color: #000;
+                            }
+                            .notes-text {
+                                font-size: 10px;
+                                opacity: 0.8;
+                                margin-top: 4px;
+                            }
+                            h1 {
+                                text-align: center;
+                                font-size: 24px;
+                                margin-bottom: 20px;
+                            }
+                            .table-header {
+                                background-color: #f3f4f6;
+                                font-weight: bold;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>${timetableTitle}</h1>
+                        ${table.outerHTML}
+                        <script>
+                            window.onload = function() {
+                                window.print();
+                                window.onafterprint = function() {
+                                    window.close();
+                                }
+                            }
+                        <\/script>
+                    </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+        }
+
     </script>
 </body>
 </html>
