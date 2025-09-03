@@ -172,6 +172,15 @@
         "documentation": {}
     },
     {
+        "label": "get_course_color",
+        "kind": 2,
+        "importPath": "schedule",
+        "description": "schedule",
+        "peekOfCode": "def get_course_color(course_name, user_selected_colors=None):\n    \"\"\"\n    获取课程颜色，优先级：\n    1. 用户选择的颜色\n    2. 预定义的颜色映射\n    3. 自动分配默认颜色（基于课程名称严格计算）\n    \"\"\"\n    # 如果用户选择了颜色，则优先使用用户选择的颜色\n    if user_selected_colors and course_name in user_selected_colors:\n        color = user_selected_colors[course_name]",
+        "detail": "schedule",
+        "documentation": {}
+    },
+    {
         "label": "index",
         "kind": 2,
         "importPath": "schedule",
@@ -222,15 +231,6 @@
         "importPath": "schedule",
         "description": "schedule",
         "peekOfCode": "def export_word():\n    \"\"\"导出为Word\"\"\"\n    try:\n        data = request.json\n        courses = data.get('courses', [])\n        user_selected_colors = data.get('userSelectedColors', {})\n        title = data.get('title', '课程表')  # 从请求中获取标题\n        df = pd.DataFrame(courses)\n        # 生成Word文件到内存\n        output = BytesIO()",
-        "detail": "schedule",
-        "documentation": {}
-    },
-    {
-        "label": "get_course_color",
-        "kind": 2,
-        "importPath": "schedule",
-        "description": "schedule",
-        "peekOfCode": "def get_course_color(course_name, user_selected_colors=None):\n    \"\"\"\n    获取课程颜色，优先级：\n    1. 用户选择的颜色\n    2. 预定义的颜色映射\n    3. 自动分配默认颜色\n    \"\"\"\n    # 如果用户选择了颜色，则优先使用用户选择的颜色\n    if user_selected_colors and course_name in user_selected_colors:\n        color = user_selected_colors[course_name]",
         "detail": "schedule",
         "documentation": {}
     },

@@ -41,7 +41,52 @@ DEFAULT_COLORS = [
     (240, 230, 140),  # 卡其色
     (230, 230, 250),  # 薰衣草色
     (255, 228, 196),  # 比卡迪色
+    (255, 160, 122),  # 浅珊瑚色
+    (176, 224, 230),  # 粉蓝
+    (255, 228, 181),  # 麦色
+    (189, 183, 107),  # 暗卡其色
+    (216, 191, 216),  # 苍紫罗兰色
+    (152, 251, 152),  # 薄荷奶油色
+    (173, 216, 230),  # 天蓝色
+    (255, 192, 203),  # 粉红色
+    (244, 164, 96),   # 沙棕色
+    (210, 180, 140),  # 萨摩色
+    (255, 215, 0),    # 金色
+    (218, 112, 214),  # 兰花色
+    (192, 192, 192),  # 灰色
+    (128, 128, 0),    # 橄榄色
+    (128, 0, 128),    # 紫色
+    (0, 128, 128),    # 水鸭色
+    (0, 0, 128),      # 海军蓝
+    (139, 0, 0),      # 深红色
+    (0, 100, 0),      # 深绿色
+    (128, 0, 0),      # 栗色
 ]
+
+def get_course_color(course_name, user_selected_colors=None):
+    """
+    获取课程颜色，优先级：
+    1. 用户选择的颜色
+    2. 预定义的颜色映射
+    3. 自动分配默认颜色（基于课程名称严格计算）
+    """
+    # 如果用户选择了颜色，则优先使用用户选择的颜色
+    if user_selected_colors and course_name in user_selected_colors:
+        color = user_selected_colors[course_name]
+        # 如果颜色是字符串格式，转换为元组
+        if isinstance(color, str):
+            return tuple(map(int, color.split(',')))
+        return color
+    
+    # 如果预定义了颜色，则使用预定义颜色
+    if course_name in COLOR_MAP:
+        return COLOR_MAP[course_name]
+    
+    # 基于课程名称生成稳定的哈希值，确保相同名称的课程总是获得相同的颜色
+    # 使用更大的颜色池以减少不同名称课程获得相同颜色的概率
+    hash_value = hash(course_name) % (len(DEFAULT_COLORS) * 100)  # 扩大颜色空间
+    color_index = hash_value % len(DEFAULT_COLORS)
+    return DEFAULT_COLORS[color_index]
 
 # 用于存储课程数据的全局变量
 courses_data_store = []
@@ -67,6 +112,7 @@ def add_course():
         return jsonify({"success": True, "message": "课程添加成功"})
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 400
+
 
 @app.route('/api/courses/conflicts', methods=['POST'])
 def check_conflicts():
@@ -141,30 +187,6 @@ def export_word():
         )
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 400
-
-def get_course_color(course_name, user_selected_colors=None):
-    """
-    获取课程颜色，优先级：
-    1. 用户选择的颜色
-    2. 预定义的颜色映射
-    3. 自动分配默认颜色
-    """
-    # 如果用户选择了颜色，则优先使用用户选择的颜色
-    if user_selected_colors and course_name in user_selected_colors:
-        color = user_selected_colors[course_name]
-        # 如果颜色是字符串格式，转换为元组
-        if isinstance(color, str):
-            return tuple(map(int, color.split(',')))
-        return color
-    
-    # 如果预定义了颜色，则使用预定义颜色
-    if course_name in COLOR_MAP:
-        return COLOR_MAP[course_name]
-    
-    # 如果都没有，则从默认颜色中自动分配
-    # 为了确保相同课程名获得相同颜色，我们基于课程名生成一个索引
-    course_hash = hash(course_name) % len(DEFAULT_COLORS)
-    return DEFAULT_COLORS[course_hash]
 
 def detect_conflicts(course_data):
     """检测课程冲突：同一教师在同一时间的课程安排"""

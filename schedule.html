@@ -608,7 +608,7 @@
             
             const conflict = checkTimeConflict(courseDay, coursePeriod, excludeIndex);
             if (conflict) {
-                alert('警告：该时间段已有课程安排！\\n' + conflict);
+                alert('警告：该时间段已有课程安排！\n' + conflict);
                 return;
             }
             
@@ -707,6 +707,60 @@
             return null;
         }
         
+        // 获取课程颜色
+        function getCourseColor(courseName) {
+            // 预定义颜色映射
+            const colorMap = {
+                "语文": [255, 204, 204],
+                "数学": [204, 255, 255],
+                "英语": [204, 255, 204],
+                "综研": [229, 229, 204],
+                "趣味体育": [255, 255, 153],
+                "体育": [153, 204, 255],
+                "音乐": [221, 170, 221],
+                "体育与健康": [153, 204, 255],
+                "道法": [204, 153, 204],
+                "美术": [255, 179, 136],
+                "科学": [255, 229, 153],
+                "劳动": [204, 255, 204]
+            };
+            
+            // 额外的默认颜色（扩展颜色池以减少冲突）
+            const defaultColors = [
+                [255, 192, 203], [173, 216, 230], [144, 238, 144], [255, 182, 193],
+                [221, 160, 221], [175, 238, 238], [255, 218, 185], [240, 230, 140],
+                [230, 230, 250], [255, 228, 196], [255, 160, 122], [176, 224, 230],
+                [255, 228, 181], [189, 183, 107], [216, 191, 216], [152, 251, 152],
+                [173, 216, 230], [255, 192, 203], [244, 164, 96], [210, 180, 140],
+                [255, 215, 0], [218, 112, 214], [192, 192, 192], [128, 128, 0],
+                [128, 0, 128], [0, 128, 128], [0, 0, 128], [139, 0, 0],
+                [0, 100, 0], [128, 0, 0]
+            ];
+            
+            // 如果用户选择了颜色，则优先使用用户选择的颜色
+            if (userSelectedColors[courseName]) {
+                return userSelectedColors[courseName];
+            }
+            
+            // 如果预定义了颜色，则使用预定义颜色
+            if (colorMap[courseName]) {
+                return colorMap[courseName];
+            }
+            
+            // 基于课程名称生成稳定的哈希值，确保相同名称的课程总是获得相同的颜色
+            // 使用更大的颜色池以减少不同名称课程获得相同颜色的概率
+            let hash = 0;
+            for (let i = 0; i < courseName.length; i++) {
+                const char = courseName.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // 转换为32位整数
+            }
+            
+            // 使用扩展的颜色池
+            const colorIndex = Math.abs(hash) % defaultColors.length;
+            return defaultColors[colorIndex];
+        }
+        
         // 更新课程表显示
         function updateCourseTable() {
             // 清空所有单元格
@@ -748,7 +802,7 @@
                     card.innerHTML = cardContent;
                     card.dataset.index = index;
                     
-                    // 应用颜色
+                    // 应用颜色（基于课程名称）
                     const color = getCourseColor(course.课程名称);
                     card.style.backgroundColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
                     
@@ -761,46 +815,6 @@
                     cell.appendChild(card);
                 }
             });
-        }
-        
-        // 获取课程颜色
-        function getCourseColor(courseName) {
-            // 预定义颜色映射
-            const colorMap = {
-                "语文": [255, 204, 204],
-                "数学": [204, 255, 255],
-                "英语": [204, 255, 204],
-                "综研": [229, 229, 204],
-                "趣味体育": [255, 255, 153],
-                "体育": [153, 204, 255],
-                "音乐": [221, 170, 221],
-                "体育与健康": [153, 204, 255],
-                "道法": [204, 153, 204],
-                "美术": [255, 179, 136],
-                "科学": [255, 229, 153],
-                "劳动": [204, 255, 204]
-            };
-            
-            // 额外的默认颜色
-            const defaultColors = [
-                [255, 192, 203], [173, 216, 230], [144, 238, 144], [255, 182, 193],
-                [221, 160, 221], [175, 238, 238], [255, 218, 185], [240, 230, 140],
-                [230, 230, 250], [255, 228, 196]
-            ];
-            
-            // 如果用户选择了颜色，则优先使用用户选择的颜色
-            if (userSelectedColors[courseName]) {
-                return userSelectedColors[courseName];
-            }
-            
-            // 如果预定义了颜色，则使用预定义颜色
-            if (colorMap[courseName]) {
-                return colorMap[courseName];
-            }
-            
-            // 如果都没有，则从默认颜色中自动分配
-            const courseHash = Math.abs(courseName.split('').reduce((a,b) => (((a << 5) - a) + b.charCodeAt(0))|0, 0)) % defaultColors.length;
-            return defaultColors[courseHash];
         }
         
         // 检查冲突
