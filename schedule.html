@@ -970,25 +970,32 @@
                 cell.style.verticalAlign = 'middle'; // 垂直居中
             });
             
-            // 调整课程卡片样式
+            // 调整课程卡片样式，使其与页面中的样式保持一致
             const courseCards = tableClone.querySelectorAll('.course-card');
             courseCards.forEach(card => {
-                // 减小课程名称的上边距
-                const courseName = card.querySelector('.font-bold');
-                if (courseName) {
-                    courseName.style.marginTop = '0';
-                    courseName.style.paddingTop = '0';
-                }
-                
-                // 确保卡片内容完整显示且不超出单元格
-                card.style.padding = '2px';
-                card.style.margin = '1px';
-                card.style.height = 'auto';
-                card.style.wordWrap = 'break-word'; // 自动换行防止内容溢出
-                card.style.overflow = 'hidden'; // 防止内容溢出
+                // 保持与页面中相同的样式
+                card.style.padding = '8px';
+                card.style.margin = '2px';
+                card.style.borderRadius = '6px';
+                card.style.fontSize = '12px';
+                card.style.cursor = 'pointer';
+                card.style.minHeight = '60px';
                 card.style.display = 'flex';
                 card.style.flexDirection = 'column';
-                card.style.justifyContent = 'center'; // 在Flex容器中垂直居中
+                card.style.justifyContent = 'flex-start'; // 与页面中保持一致的对齐方式
+                
+                // 重置文本对齐方式，让内容自然对齐
+                const children = card.children;
+                for (let i = 0; i < children.length; i++) {
+                    const child = children[i];
+                    // 课程名称保持左对齐（与页面中保持一致）
+                    if (child.classList.contains('font-bold')) {
+                        child.style.textAlign = 'left';
+                    } else {
+                        child.style.textAlign = 'left';
+                    }
+                    child.style.width = '100%';
+                }
             });
             
             // 创建一个临时容器来放置克隆的表格
