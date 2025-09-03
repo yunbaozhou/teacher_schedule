@@ -8,6 +8,8 @@ import json
 import random
 from flask import Flask, request, jsonify, send_file, render_template
 import os
+# 添加必要的导入
+from io import BytesIO
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 
@@ -98,12 +100,19 @@ def export_excel():
         title = data.get('title', '课程表')  # 从请求中获取标题
         df = pd.DataFrame(courses)
         
-        # 生成Excel文件
-        filename = f"{title}.xlsx"
-        filepath = generate_excel(df, filename, title)
+        # 生成Excel文件到内存
+        output = BytesIO()
+        generate_excel(df, output, title)
+        output.seek(0)
         
-        # 返回文件
-        return send_file(filepath, as_attachment=True)
+        # 直接返回文件流
+        filename = f"{title}.xlsx"
+        return send_file(
+            output,
+            as_attachment=True,
+            download_name=filename,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 400
 
@@ -117,12 +126,19 @@ def export_word():
         title = data.get('title', '课程表')  # 从请求中获取标题
         df = pd.DataFrame(courses)
         
-        # 生成Word文件
-        filename = f"{title}.docx"
-        filepath = generate_word(df, filename, user_selected_colors, title)
+        # 生成Word文件到内存
+        output = BytesIO()
+        generate_word(df, output, user_selected_colors, title)
+        output.seek(0)
         
-        # 返回文件
-        return send_file(filepath, as_attachment=True)
+        # 直接返回文件流
+        filename = f"{title}.docx"
+        return send_file(
+            output,
+            as_attachment=True,
+            download_name=filename,
+            mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 400
 
@@ -170,7 +186,7 @@ def detect_conflicts(course_data):
     
     return conflicts
 
-def generate_excel(course_data, output_file="课程表.xlsx", title="课程表"):
+def generate_excel(course_data, output_file=None, title="课程表"):
     """生成Excel格式课程表"""
     # 创建工作簿和工作表
     wb = Workbook()
@@ -244,9 +260,18 @@ def generate_excel(course_data, output_file="课程表.xlsx", title="课程表")
     for row in range(1, max_period + 3):
         ws.row_dimensions[row].height = 60
     
-    # 保存文件
-    wb.save(output_file)
-    return output_file
+    # 保存文件到指定输出位置或内存
+    if output_file:
+        if isinstance(output_file, BytesIO):
+            wb.save(output_file)
+        else:
+            wb.save(output_file)
+            return output_file
+    else:
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+        return output
 
 def set_cell_background_color(cell, color):
     """设置单元格背景颜色"""
@@ -260,7 +285,7 @@ def set_cell_background_color(cell, color):
     shd.set(qn('w:fill'), hex_color)
     tc_pr.append(shd)
 
-def generate_word(course_data, output_file="课程表.docx", user_selected_colors=None, title="课程表"):
+def generate_word(course_data, output_file=None, user_selected_colors=None, title="课程表"):
     """生成Word格式课程表"""
     doc = Document()
     
@@ -348,8 +373,18 @@ def generate_word(course_data, output_file="课程表.docx", user_selected_color
                 for run in paragraph.runs:
                     run.font.name = 'SimSun'  # 宋体
     
-    doc.save(output_file)
-    return output_file
+    # 保存文件到指定输出位置或内存
+    if output_file:
+        if isinstance(output_file, BytesIO):
+            doc.save(output_file)
+        else:
+            doc.save(output_file)
+            return output_file
+    else:
+        output = BytesIO()
+        doc.save(output)
+        output.seek(0)
+        return output
 
 def load_course_data_from_excel(file_path):
     """

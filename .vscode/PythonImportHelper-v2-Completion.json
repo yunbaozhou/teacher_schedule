@@ -164,6 +164,14 @@
         "documentation": {}
     },
     {
+        "label": "BytesIO",
+        "importPath": "io",
+        "description": "io",
+        "isExtraImport": true,
+        "detail": "io",
+        "documentation": {}
+    },
+    {
         "label": "index",
         "kind": 2,
         "importPath": "schedule",
@@ -204,7 +212,7 @@
         "kind": 2,
         "importPath": "schedule",
         "description": "schedule",
-        "peekOfCode": "def export_excel():\n    \"\"\"导出为Excel\"\"\"\n    try:\n        data = request.json\n        courses = data.get('courses', [])\n        title = data.get('title', '课程表')  # 从请求中获取标题\n        df = pd.DataFrame(courses)\n        # 生成Excel文件\n        filename = f\"{title}.xlsx\"\n        filepath = generate_excel(df, filename, title)",
+        "peekOfCode": "def export_excel():\n    \"\"\"导出为Excel\"\"\"\n    try:\n        data = request.json\n        courses = data.get('courses', [])\n        title = data.get('title', '课程表')  # 从请求中获取标题\n        df = pd.DataFrame(courses)\n        # 生成Excel文件到内存\n        output = BytesIO()\n        generate_excel(df, output, title)",
         "detail": "schedule",
         "documentation": {}
     },
@@ -213,7 +221,7 @@
         "kind": 2,
         "importPath": "schedule",
         "description": "schedule",
-        "peekOfCode": "def export_word():\n    \"\"\"导出为Word\"\"\"\n    try:\n        data = request.json\n        courses = data.get('courses', [])\n        user_selected_colors = data.get('userSelectedColors', {})\n        title = data.get('title', '课程表')  # 从请求中获取标题\n        df = pd.DataFrame(courses)\n        # 生成Word文件\n        filename = f\"{title}.docx\"",
+        "peekOfCode": "def export_word():\n    \"\"\"导出为Word\"\"\"\n    try:\n        data = request.json\n        courses = data.get('courses', [])\n        user_selected_colors = data.get('userSelectedColors', {})\n        title = data.get('title', '课程表')  # 从请求中获取标题\n        df = pd.DataFrame(courses)\n        # 生成Word文件到内存\n        output = BytesIO()",
         "detail": "schedule",
         "documentation": {}
     },
@@ -240,7 +248,7 @@
         "kind": 2,
         "importPath": "schedule",
         "description": "schedule",
-        "peekOfCode": "def generate_excel(course_data, output_file=\"课程表.xlsx\", title=\"课程表\"):\n    \"\"\"生成Excel格式课程表\"\"\"\n    # 创建工作簿和工作表\n    wb = Workbook()\n    ws = wb.active\n    ws.title = title\n    # 设置标题\n    ws['A1'] = title\n    ws.merge_cells('A1:H1')\n    ws['A1'].font = Font(size=16, bold=True)",
+        "peekOfCode": "def generate_excel(course_data, output_file=None, title=\"课程表\"):\n    \"\"\"生成Excel格式课程表\"\"\"\n    # 创建工作簿和工作表\n    wb = Workbook()\n    ws = wb.active\n    ws.title = title\n    # 设置标题\n    ws['A1'] = title\n    ws.merge_cells('A1:H1')\n    ws['A1'].font = Font(size=16, bold=True)",
         "detail": "schedule",
         "documentation": {}
     },
@@ -258,7 +266,7 @@
         "kind": 2,
         "importPath": "schedule",
         "description": "schedule",
-        "peekOfCode": "def generate_word(course_data, output_file=\"课程表.docx\", user_selected_colors=None, title=\"课程表\"):\n    \"\"\"生成Word格式课程表\"\"\"\n    doc = Document()\n    # 添加标题\n    title_para = doc.add_paragraph()\n    title_para.alignment = 1  # 居中对齐\n    title_run = title_para.add_run(title)\n    title_run.font.size = Pt(16)\n    title_run.font.bold = True\n    # 确保必要的列存在",
+        "peekOfCode": "def generate_word(course_data, output_file=None, user_selected_colors=None, title=\"课程表\"):\n    \"\"\"生成Word格式课程表\"\"\"\n    doc = Document()\n    # 添加标题\n    title_para = doc.add_paragraph()\n    title_para.alignment = 1  # 居中对齐\n    title_run = title_para.add_run(title)\n    title_run.font.size = Pt(16)\n    title_run.font.bold = True\n    # 确保必要的列存在",
         "detail": "schedule",
         "documentation": {}
     },
