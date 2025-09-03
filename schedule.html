@@ -917,7 +917,7 @@
                 return;
             }
             
-            // 显示导出中提示
+            // 显示加载状态
             const originalText = document.getElementById('export-image').innerHTML;
             document.getElementById('export-image').innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>导出中...';
             document.getElementById('export-image').disabled = true;
@@ -929,10 +929,44 @@
             const table = document.getElementById('course-table');
             const tableClone = table.cloneNode(true);
             
+            // 调整克隆表格的样式以解决显示问题
+            tableClone.style.fontSize = '14px';
+            tableClone.style.width = '100%';
+            tableClone.style.tableLayout = 'fixed'; // 固定表格布局防止内容溢出
+            
+            // 调整表格单元格样式实现垂直居中
+            const tableCells = tableClone.querySelectorAll('td, th');
+            tableCells.forEach(cell => {
+                cell.style.display = 'table-cell';
+                cell.style.verticalAlign = 'middle'; // 垂直居中
+            });
+            
+            // 调整课程卡片样式
+            const courseCards = tableClone.querySelectorAll('.course-card');
+            courseCards.forEach(card => {
+                // 减小课程名称的上边距
+                const courseName = card.querySelector('.font-bold');
+                if (courseName) {
+                    courseName.style.marginTop = '0';
+                    courseName.style.paddingTop = '0';
+                }
+                
+                // 确保卡片内容完整显示且不超出单元格
+                card.style.padding = '2px';
+                card.style.margin = '1px';
+                card.style.height = 'auto';
+                card.style.wordWrap = 'break-word'; // 自动换行防止内容溢出
+                card.style.overflow = 'hidden'; // 防止内容溢出
+                card.style.display = 'flex';
+                card.style.flexDirection = 'column';
+                card.style.justifyContent = 'center'; // 在Flex容器中垂直居中
+            });
+            
             // 创建一个临时容器来放置克隆的表格
             const tempContainer = document.createElement('div');
             tempContainer.style.padding = '20px';
             tempContainer.style.backgroundColor = '#f8fafc';
+            tempContainer.style.width = table.offsetWidth + 'px'; // 设置容器宽度与原表格一致
             tempContainer.appendChild(tableClone);
             
             // 添加到页面中但隐藏起来
@@ -945,7 +979,11 @@
             html2canvas(tempContainer, {
                 scale: 2, // 提高图片质量
                 useCORS: true,
-                backgroundColor: '#f8fafc'
+                backgroundColor: '#f8fafc',
+                scrollY: -window.scrollY,
+                windowHeight: tempContainer.scrollHeight + 100, // 增加额外高度确保内容完整显示
+                width: tempContainer.scrollWidth, // 设置画布宽度
+                height: tempContainer.scrollHeight // 设置画布高度
             }).then(canvas => {
                 // 恢复按钮状态
                 document.getElementById('export-image').innerHTML = originalText;
