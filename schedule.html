@@ -339,12 +339,33 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">地点</label>
                     <input id="edit-course-location" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">备注</label>
-                    <textarea id="edit-course-notes" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" rows="2"></textarea>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="edit-course-notes">
+                        备注
+                    </label>
+                    <input type="text" id="edit-course-notes" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">自定义颜色</label>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        时间段（可选）
+                    </label>
+                    <div class="flex items-center space-x-2">
+                        <select id="edit-course-start-time" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">选择开始时间</option>
+                        </select>
+                        <span>~</span>
+                        <select id="edit-course-end-time" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">选择结束时间</option>
+                        </select>
+                    </div>
+                    <p class="text-gray-500 text-xs mt-1">时间段以5分钟为最小单位（可选，不填则不显示）</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        课程颜色
+                    </label>
                     <div class="flex flex-wrap gap-2">
                         <div class="color-picker bg-pink-200" data-color="255,204,204"></div>
                         <div class="color-picker bg-blue-200" data-color="204,255,255"></div>
@@ -376,10 +397,40 @@
         let courseData = [];
         let userSelectedColors = {};
         
+        // 生成时间选项（5分钟为间隔）
+        function generateTimeOptions() {
+            const startSelect = document.getElementById('edit-course-start-time');
+            const endSelect = document.getElementById('edit-course-end-time');
+            
+            // 清空现有选项
+            startSelect.innerHTML = '<option value="">选择开始时间</option>';
+            endSelect.innerHTML = '<option value="">选择结束时间</option>';
+            
+            // 生成时间选项（从早上6点到晚上10点）
+            for (let hour = 6; hour <= 22; hour++) {
+                for (let minute = 0; minute < 60; minute += 5) {
+                    const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    const option1 = document.createElement('option');
+                    option1.value = timeString;
+                    option1.textContent = timeString;
+                    
+                    const option2 = document.createElement('option');
+                    option2.value = timeString;
+                    option2.textContent = timeString;
+                    
+                    startSelect.appendChild(option1);
+                    endSelect.appendChild(option2);
+                }
+            }
+        }
+        
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
             // 初始化颜色选择器
             initColorPickers();
+            
+            // 生成时间选项
+            generateTimeOptions();
             
             // 绑定事件
             document.getElementById('export-image').addEventListener('click', exportToImage);
@@ -464,6 +515,8 @@
             document.getElementById('edit-course-teacher').value = '';
             document.getElementById('edit-course-location').value = '';
             document.getElementById('edit-course-notes').value = '';
+            document.getElementById('edit-course-start-time').value = '';
+            document.getElementById('edit-course-end-time').value = '';
             document.getElementById('selected-color').value = '';
             
             // 隐藏删除按钮
@@ -498,6 +551,21 @@
             document.getElementById('edit-course-location').value = course.地点;
             document.getElementById('edit-course-notes').value = course.备注 || '';
             
+            // 处理时间段数据
+            if (course.时间) {
+                const timeParts = course.时间.split('~');
+                if (timeParts.length === 2) {
+                    document.getElementById('edit-course-start-time').value = timeParts[0];
+                    document.getElementById('edit-course-end-time').value = timeParts[1];
+                } else {
+                    document.getElementById('edit-course-start-time').value = '';
+                    document.getElementById('edit-course-end-time').value = '';
+                }
+            } else {
+                document.getElementById('edit-course-start-time').value = '';
+                document.getElementById('edit-course-end-time').value = '';
+            }
+            
             // 显示删除按钮
             document.getElementById('delete-course-btn').classList.remove('hidden');
             
@@ -519,6 +587,8 @@
             const courseTeacher = document.getElementById('edit-course-teacher').value;
             const courseLocation = document.getElementById('edit-course-location').value;
             const courseNotes = document.getElementById('edit-course-notes').value;
+            const startTime = document.getElementById('edit-course-start-time').value;
+            const endTime = document.getElementById('edit-course-end-time').value;
             const selectedColor = document.getElementById('selected-color').value;
             
             if (!courseName) {
@@ -538,6 +608,12 @@
                 return;
             }
             
+            // 构建时间字符串
+            let courseTime = '';
+            if (startTime && endTime) {
+                courseTime = `${startTime}~${endTime}`;
+            }
+            
             if (mode === 'add') {
                 // 创建课程对象
                 const course = {
@@ -546,7 +622,8 @@
                     "星期": courseDay,
                     "节次": coursePeriod,
                     "地点": courseLocation || '未指定',
-                    "备注": courseNotes || ''
+                    "备注": courseNotes || '',
+                    "时间": courseTime || ''
                 };
                 
                 // 添加到课程数据中
@@ -567,7 +644,8 @@
                     "星期": courseDay,
                     "节次": coursePeriod,
                     "地点": courseLocation || '未指定',
-                    "备注": courseNotes || ''
+                    "备注": courseNotes || '',
+                    "时间": courseTime || ''
                 };
                 
                 // 如果课程名称改变，需要更新颜色映射
@@ -640,6 +718,11 @@
                     // 只有当地点信息存在且不为"未指定"时才显示
                     if (course.地点 && course.地点 !== '未指定') {
                         cardContent += `<div class="text-xs">地点：${course.地点}</div>`;
+                    }
+                    
+                    // 只有当时间段信息存在时才显示
+                    if (course.时间) {
+                        cardContent += `<div class="text-xs font-medium text-blue-700">时间：${course.时间}</div>`;
                     }
                     
                     // 只有当备注信息存在时才显示
