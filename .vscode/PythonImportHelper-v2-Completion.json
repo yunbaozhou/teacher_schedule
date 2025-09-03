@@ -41,6 +41,54 @@
         "documentation": {}
     },
     {
+        "label": "Workbook",
+        "importPath": "openpyxl",
+        "description": "openpyxl",
+        "isExtraImport": true,
+        "detail": "openpyxl",
+        "documentation": {}
+    },
+    {
+        "label": "PatternFill",
+        "importPath": "openpyxl.styles",
+        "description": "openpyxl.styles",
+        "isExtraImport": true,
+        "detail": "openpyxl.styles",
+        "documentation": {}
+    },
+    {
+        "label": "Font",
+        "importPath": "openpyxl.styles",
+        "description": "openpyxl.styles",
+        "isExtraImport": true,
+        "detail": "openpyxl.styles",
+        "documentation": {}
+    },
+    {
+        "label": "Alignment",
+        "importPath": "openpyxl.styles",
+        "description": "openpyxl.styles",
+        "isExtraImport": true,
+        "detail": "openpyxl.styles",
+        "documentation": {}
+    },
+    {
+        "label": "Border",
+        "importPath": "openpyxl.styles",
+        "description": "openpyxl.styles",
+        "isExtraImport": true,
+        "detail": "openpyxl.styles",
+        "documentation": {}
+    },
+    {
+        "label": "Side",
+        "importPath": "openpyxl.styles",
+        "description": "openpyxl.styles",
+        "isExtraImport": true,
+        "detail": "openpyxl.styles",
+        "documentation": {}
+    },
+    {
         "label": "json",
         "kind": 6,
         "isExtraImport": true,
@@ -148,7 +196,7 @@
         "kind": 2,
         "importPath": "schedule",
         "description": "schedule",
-        "peekOfCode": "def export_excel():\n    \"\"\"导出为Excel\"\"\"\n    try:\n        data = request.json\n        courses = data.get('courses', [])\n        df = pd.DataFrame(courses)\n        # 生成Excel文件\n        filename = \"课程表.xlsx\"\n        filepath = generate_excel(df, filename)\n        # 返回文件",
+        "peekOfCode": "def export_excel():\n    \"\"\"导出为Excel\"\"\"\n    try:\n        data = request.json\n        courses = data.get('courses', [])\n        title = data.get('title', '课程表')  # 从请求中获取标题\n        df = pd.DataFrame(courses)\n        # 生成Excel文件\n        filename = f\"{title}.xlsx\"\n        filepath = generate_excel(df, filename, title)",
         "detail": "schedule",
         "documentation": {}
     },
@@ -184,7 +232,7 @@
         "kind": 2,
         "importPath": "schedule",
         "description": "schedule",
-        "peekOfCode": "def generate_excel(course_data, output_file=\"课程表.xlsx\"):\n    \"\"\"生成Excel格式课程表\"\"\"\n    # 创建透视表，包含更多信息\n    try:\n        # 确保必要的列存在\n        required_columns = [\"节次\", \"星期\", \"课程名称\"]\n        if all(col in course_data.columns for col in required_columns):\n            pivot_table = course_data.pivot_table(\n                index=\"节次\", \n                columns=\"星期\", ",
+        "peekOfCode": "def generate_excel(course_data, output_file=\"课程表.xlsx\", title=\"课程表\"):\n    \"\"\"生成Excel格式课程表\"\"\"\n    # 创建工作簿和工作表\n    wb = Workbook()\n    ws = wb.active\n    ws.title = title\n    # 设置标题\n    ws['A1'] = title\n    ws.merge_cells('A1:H1')\n    ws['A1'].font = Font(size=16, bold=True)",
         "detail": "schedule",
         "documentation": {}
     },
