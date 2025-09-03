@@ -6,6 +6,7 @@
     <title>课程表生成工具</title>
     <script src="https://cdn.tailwindcss.com/3.3.3"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
         body {
             font-family: 'Noto Sans SC', sans-serif;
@@ -122,6 +123,9 @@
                     <i class="fas fa-calendar-alt mr-2 text-indigo-500"></i>课程表
                 </h2>
                 <div class="flex space-x-2">
+                    <button id="export-image" class="bg-pink-600 text-white py-1 px-3 rounded-md text-sm hover:bg-pink-700 transition-colors">
+                        <i class="fas fa-file-image mr-1"></i>图片
+                    </button>
                     <button id="export-excel" class="bg-green-600 text-white py-1 px-3 rounded-md text-sm hover:bg-green-700 transition-colors">
                         <i class="fas fa-file-excel mr-1"></i>Excel
                     </button>
@@ -378,6 +382,7 @@
             initColorPickers();
             
             // 绑定事件
+            document.getElementById('export-image').addEventListener('click', exportToImage);
             document.getElementById('export-excel').addEventListener('click', exportToExcel);
             document.getElementById('export-word').addEventListener('click', exportToWord);
             document.getElementById('print-schedule').addEventListener('click', printSchedule);
@@ -829,8 +834,59 @@
                 return;
             }
             
-            alert('图片导出功能已触发。在完整应用中，这将生成并下载图片文件。');
-            // 在实际应用中，这里会使用html2canvas等库生成图片
+            // 显示导出中提示
+            const originalText = document.getElementById('export-image').innerHTML;
+            document.getElementById('export-image').innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>导出中...';
+            document.getElementById('export-image').disabled = true;
+            
+            // 获取课表标题
+            const timetableTitle = document.getElementById('timetable-title').value || '课程表';
+            
+            // 克隆表格以避免影响原始表格
+            const table = document.getElementById('course-table');
+            const tableClone = table.cloneNode(true);
+            
+            // 创建一个临时容器来放置克隆的表格
+            const tempContainer = document.createElement('div');
+            tempContainer.style.padding = '20px';
+            tempContainer.style.backgroundColor = '#f8fafc';
+            tempContainer.appendChild(tableClone);
+            
+            // 添加到页面中但隐藏起来
+            tempContainer.style.position = 'absolute';
+            tempContainer.style.left = '-9999px';
+            tempContainer.style.top = '-9999px';
+            document.body.appendChild(tempContainer);
+            
+            // 使用html2canvas将表格转换为图片
+            html2canvas(tempContainer, {
+                scale: 2, // 提高图片质量
+                useCORS: true,
+                backgroundColor: '#f8fafc'
+            }).then(canvas => {
+                // 恢复按钮状态
+                document.getElementById('export-image').innerHTML = originalText;
+                document.getElementById('export-image').disabled = false;
+                
+                // 从页面中移除临时容器
+                document.body.removeChild(tempContainer);
+                
+                // 将canvas转换为图片并下载
+                const link = document.createElement('a');
+                link.download = timetableTitle + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(error => {
+                // 恢复按钮状态
+                document.getElementById('export-image').innerHTML = originalText;
+                document.getElementById('export-image').disabled = false;
+                
+                // 从页面中移除临时容器
+                document.body.removeChild(tempContainer);
+                
+                console.error('导出图片时出错:', error);
+                alert('导出图片失败: ' + error.message);
+            });
         }
         
         // 打印课程表
