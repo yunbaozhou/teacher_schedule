@@ -1,6 +1,6 @@
 import pandas as pd
 from docx import Document
-from docx.shared import Inches, RGBColor
+from docx.shared import Inches, RGBColor, Pt
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
@@ -114,11 +114,12 @@ def export_word():
         data = request.json
         courses = data.get('courses', [])
         user_selected_colors = data.get('userSelectedColors', {})
+        title = data.get('title', '课程表')  # 从请求中获取标题
         df = pd.DataFrame(courses)
         
         # 生成Word文件
-        filename = "课程表.docx"
-        filepath = generate_word(df, filename, user_selected_colors)
+        filename = f"{title}.docx"
+        filepath = generate_word(df, filename, user_selected_colors, title)
         
         # 返回文件
         return send_file(filepath, as_attachment=True)
@@ -259,10 +260,16 @@ def set_cell_background_color(cell, color):
     shd.set(qn('w:fill'), hex_color)
     tc_pr.append(shd)
 
-def generate_word(course_data, output_file="课程表.docx", user_selected_colors=None):
+def generate_word(course_data, output_file="课程表.docx", user_selected_colors=None, title="课程表"):
     """生成Word格式课程表"""
     doc = Document()
-    doc.add_heading("课程表", level=1)
+    
+    # 添加标题
+    title_para = doc.add_paragraph()
+    title_para.alignment = 1  # 居中对齐
+    title_run = title_para.add_run(title)
+    title_run.font.size = Pt(16)
+    title_run.font.bold = True
     
     # 确保必要的列存在
     required_columns = ["节次", "星期", "课程名称"]

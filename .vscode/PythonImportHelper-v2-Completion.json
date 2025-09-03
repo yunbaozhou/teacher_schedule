@@ -33,6 +33,14 @@
         "documentation": {}
     },
     {
+        "label": "Pt",
+        "importPath": "docx.shared",
+        "description": "docx.shared",
+        "isExtraImport": true,
+        "detail": "docx.shared",
+        "documentation": {}
+    },
+    {
         "label": "WD_TABLE_ALIGNMENT",
         "importPath": "docx.enum.table",
         "description": "docx.enum.table",
@@ -205,7 +213,7 @@
         "kind": 2,
         "importPath": "schedule",
         "description": "schedule",
-        "peekOfCode": "def export_word():\n    \"\"\"导出为Word\"\"\"\n    try:\n        data = request.json\n        courses = data.get('courses', [])\n        user_selected_colors = data.get('userSelectedColors', {})\n        df = pd.DataFrame(courses)\n        # 生成Word文件\n        filename = \"课程表.docx\"\n        filepath = generate_word(df, filename, user_selected_colors)",
+        "peekOfCode": "def export_word():\n    \"\"\"导出为Word\"\"\"\n    try:\n        data = request.json\n        courses = data.get('courses', [])\n        user_selected_colors = data.get('userSelectedColors', {})\n        title = data.get('title', '课程表')  # 从请求中获取标题\n        df = pd.DataFrame(courses)\n        # 生成Word文件\n        filename = f\"{title}.docx\"",
         "detail": "schedule",
         "documentation": {}
     },
@@ -250,7 +258,7 @@
         "kind": 2,
         "importPath": "schedule",
         "description": "schedule",
-        "peekOfCode": "def generate_word(course_data, output_file=\"课程表.docx\", user_selected_colors=None):\n    \"\"\"生成Word格式课程表\"\"\"\n    doc = Document()\n    doc.add_heading(\"课程表\", level=1)\n    # 确保必要的列存在\n    required_columns = [\"节次\", \"星期\", \"课程名称\"]\n    if not all(col in course_data.columns for col in required_columns):\n        doc.add_paragraph(\"数据格式不正确，缺少必要列\")\n        doc.save(output_file)\n        return output_file",
+        "peekOfCode": "def generate_word(course_data, output_file=\"课程表.docx\", user_selected_colors=None, title=\"课程表\"):\n    \"\"\"生成Word格式课程表\"\"\"\n    doc = Document()\n    # 添加标题\n    title_para = doc.add_paragraph()\n    title_para.alignment = 1  # 居中对齐\n    title_run = title_para.add_run(title)\n    title_run.font.size = Pt(16)\n    title_run.font.bold = True\n    # 确保必要的列存在",
         "detail": "schedule",
         "documentation": {}
     },
