@@ -640,6 +640,7 @@
             } else {
                 // 编辑模式
                 const index = parseInt(document.getElementById('edit-course-index').value);
+                const oldCourseName = courseData[index].课程名称;
                 
                 // 更新课程数据
                 courseData[index] = {
@@ -652,9 +653,19 @@
                     "时间": courseTime || ''
                 };
                 
-                // 如果课程名称改变，需要更新颜色映射
-                if (courseData[index].课程名称 !== courseName) {
-                    // 这里可以处理颜色映射的更新，如果有需要的话
+                // 如果用户选择了颜色，则保存到用户选择的颜色映射中
+                if (selectedColor) {
+                    userSelectedColors[courseName] = selectedColor.split(',').map(Number);
+                    // 如果课程名称改变了，需要移除旧的映射
+                    if (oldCourseName !== courseName) {
+                        delete userSelectedColors[oldCourseName];
+                    }
+                } else {
+                    // 如果用户没有选择新颜色但课程名称改变了，需要更新映射键
+                    if (oldCourseName !== courseName && userSelectedColors[oldCourseName]) {
+                        userSelectedColors[courseName] = userSelectedColors[oldCourseName];
+                        delete userSelectedColors[oldCourseName];
+                    }
                 }
             }
             
