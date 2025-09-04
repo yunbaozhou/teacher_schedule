@@ -716,6 +716,9 @@
             // 添加默认选择项
             addScheduleSelectionItem(day, period);
             
+            // 显示添加星期节次按钮
+            document.getElementById('add-schedule-item').style.display = 'block';
+            
             // 隐藏删除按钮
             document.getElementById('delete-course-btn').classList.add('hidden');
             
@@ -833,6 +836,9 @@
                     alert('至少需要保留一个星期节次选择项');
                 }
             });
+            
+            // 隐藏添加星期节次按钮
+            document.getElementById('add-schedule-item').style.display = 'none';
             
             // 显示删除按钮
             document.getElementById('delete-course-btn').classList.remove('hidden');
