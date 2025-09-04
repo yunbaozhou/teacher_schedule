@@ -560,8 +560,8 @@
             const startSelect = document.getElementById('edit-course-start-time');
             const endSelect = document.getElementById('edit-course-end-time');
             
-            // 添加时间选项（以5分钟为间隔）
-            for (let hour = 0; hour < 24; hour++) {
+            // 添加时间选项（以5分钟为间隔，从6点开始）
+            for (let hour = 6; hour < 24; hour++) {
                 for (let minute = 0; minute < 60; minute += 5) {
                     const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
                     const option1 = new Option(timeString, timeString);
