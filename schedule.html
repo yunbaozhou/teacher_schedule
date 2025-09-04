@@ -238,7 +238,7 @@
                     <thead>
                         <!-- 课表标题行 -->
                         <tr>
-                            <th colspan="8" class="py-2 bg-gray-100 border border-gray-200">
+                            <th colspan="8" class="py-2 bg-gray-200 border border-gray-200">
                                 <input type="text" id="timetable-title" class="timetable-title" placeholder="请输入课表名称（例如：初一(1)班课程表）">
                             </th>
                         </tr>
@@ -639,7 +639,10 @@
             
             // 点击其他地方隐藏右键菜单
             document.addEventListener('click', function() {
-                document.getElementById('context-menu').style.display = 'none';
+                const contextMenu = document.getElementById('context-menu');
+                if (contextMenu) {
+                    contextMenu.style.display = 'none';
+                }
             });
             
             // 绑定导出按钮事件
@@ -782,56 +785,53 @@
             const selectionList = document.getElementById('schedule-selection-list');
             selectionList.innerHTML = '';
             
-            // 查找所有同名课程
-            const sameNameCourses = courseData.filter(c => c.课程名称 === course.课程名称);
+            // 只为当前选中的课程创建一个选择项
+            const newItem = document.createElement('div');
+            newItem.className = 'schedule-selection-item grid grid-cols-12 gap-2 mb-2';
+            newItem.innerHTML = `
+                <div class="col-span-5">
+                    <select class="schedule-day w-full px-2 py-1 border border-gray-300 rounded-md text-sm">
+                        <option value="周一" ${course.星期 === '周一' ? 'selected' : ''}>星期一</option>
+                        <option value="周二" ${course.星期 === '周二' ? 'selected' : ''}>星期二</option>
+                        <option value="周三" ${course.星期 === '周三' ? 'selected' : ''}>星期三</option>
+                        <option value="周四" ${course.星期 === '周四' ? 'selected' : ''}>星期四</option>
+                        <option value="周五" ${course.星期 === '周五' ? 'selected' : ''}>星期五</option>
+                        <option value="周六" ${course.星期 === '周六' ? 'selected' : ''}>星期六</option>
+                        <option value="周日" ${course.星期 === '周日' ? 'selected' : ''}>星期日</option>
+                    </select>
+                </div>
+                <div class="col-span-5">
+                    <div class="periods-container border border-gray-300 rounded-md p-2 h-24 overflow-y-auto">
+                        <div class="grid grid-cols-2 gap-1">
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="1" ${course.节次 === 1 ? 'checked' : ''}><span class="ml-1 text-xs">第1节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="2" ${course.节次 === 2 ? 'checked' : ''}><span class="ml-1 text-xs">第2节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="3" ${course.节次 === 3 ? 'checked' : ''}><span class="ml-1 text-xs">第3节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="4" ${course.节次 === 4 ? 'checked' : ''}><span class="ml-1 text-xs">第4节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="5" ${course.节次 === 5 ? 'checked' : ''}><span class="ml-1 text-xs">第5节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="6" ${course.节次 === 6 ? 'checked' : ''}><span class="ml-1 text-xs">第6节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="7" ${course.节次 === 7 ? 'checked' : ''}><span class="ml-1 text-xs">第7节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="8" ${course.节次 === 8 ? 'checked' : ''}><span class="ml-1 text-xs">第8节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="9" ${course.节次 === 9 ? 'checked' : ''}><span class="ml-1 text-xs">第9节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="10" ${course.节次 === 10 ? 'checked' : ''}><span class="ml-1 text-xs">第10节</span></label></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-span-2 flex items-center">
+                    <button type="button" class="remove-schedule-item text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
             
-            // 为每个同名课程创建一个选择项
-            sameNameCourses.forEach((c, i) => {
-                const newItem = document.createElement('div');
-                newItem.className = 'schedule-selection-item grid grid-cols-12 gap-2 mb-2';
-                newItem.innerHTML = `
-                    <div class="col-span-5">
-                        <select class="schedule-day w-full px-2 py-1 border border-gray-300 rounded-md text-sm">
-                            <option value="周一"${c.星期 === '周一' ? ' selected' : ''}>星期一</option>
-                            <option value="周二"${c.星期 === '周二' ? ' selected' : ''}>星期二</option>
-                            <option value="周三"${c.星期 === '周三' ? ' selected' : ''}>星期三</option>
-                            <option value="周四"${c.星期 === '周四' ? ' selected' : ''}>星期四</option>
-                            <option value="周五"${c.星期 === '周五' ? ' selected' : ''}>星期五</option>
-                            <option value="周六"${c.星期 === '周六' ? ' selected' : ''}>星期六</option>
-                            <option value="周日"${c.星期 === '周日' ? ' selected' : ''}>星期日</option>
-                        </select>
-                    </div>
-                    <div class="col-span-5">
-                        <select multiple class="periods-select w-full px-2 py-1 border border-gray-300 rounded-md text-sm h-24">
-                            <option value="1"${c.节次 == 1 ? ' selected' : ''}>第1节</option>
-                            <option value="2"${c.节次 == 2 ? ' selected' : ''}>第2节</option>
-                            <option value="3"${c.节次 == 3 ? ' selected' : ''}>第3节</option>
-                            <option value="4"${c.节次 == 4 ? ' selected' : ''}>第4节</option>
-                            <option value="5"${c.节次 == 5 ? ' selected' : ''}>第5节</option>
-                            <option value="6"${c.节次 == 6 ? ' selected' : ''}>第6节</option>
-                            <option value="7"${c.节次 == 7 ? ' selected' : ''}>第7节</option>
-                            <option value="8"${c.节次 == 8 ? ' selected' : ''}>第8节</option>
-                            <option value="9"${c.节次 == 9 ? ' selected' : ''}>第9节</option>
-                            <option value="10"${c.节次 == 10 ? ' selected' : ''}>第10节</option>
-                        </select>
-                    </div>
-                    <div class="col-span-2 flex items-center">
-                        <button type="button" class="remove-schedule-item text-red-500 hover:text-red-700">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                
-                selectionList.appendChild(newItem);
-                
-                // 绑定删除事件
-                newItem.querySelector('.remove-schedule-item').addEventListener('click', function() {
-                    if (selectionList.children.length > 1) {
-                        selectionList.removeChild(newItem);
-                    } else {
-                        alert('至少需要保留一个星期节次选择项');
-                    }
-                });
+            selectionList.appendChild(newItem);
+            
+            // 绑定删除事件
+            newItem.querySelector('.remove-schedule-item').addEventListener('click', function() {
+                if (selectionList.children.length > 1) {
+                    selectionList.removeChild(newItem);
+                } else {
+                    alert('至少需要保留一个星期节次选择项');
+                }
             });
             
             // 显示删除按钮
@@ -929,7 +929,19 @@
             
             scheduleItems.forEach(item => {
                 const day = item.querySelector('.schedule-day').value;
-                const selectedPeriods = Array.from(item.querySelector('.periods-select').selectedOptions).map(option => parseInt(option.value));
+                let selectedPeriods = [];
+                
+                // 检查是编辑模式还是添加模式
+                const periodsSelect = item.querySelector('.periods-select');
+                const periodCheckboxes = item.querySelectorAll('.period-checkbox:checked');
+                
+                if (periodsSelect) {
+                    // 添加模式 - 使用多选下拉框
+                    selectedPeriods = Array.from(periodsSelect.selectedOptions).map(option => parseInt(option.value));
+                } else if (periodCheckboxes.length > 0) {
+                    // 编辑模式 - 使用复选框
+                    selectedPeriods = Array.from(periodCheckboxes).map(checkbox => parseInt(checkbox.value));
+                }
                 
                 if (selectedPeriods.length > 0) {
                     hasSelectedPeriod = true;
@@ -1004,35 +1016,26 @@
                 
                 // 关闭模态框
                 closeModal();
-                
-                alert('课程添加成功！');
             } else {
                 // 编辑模式
                 const index = parseInt(document.getElementById('edit-course-index').value);
                 const originalCourse = courseData[index];
-                const originalName = originalCourse.课程名称;
                 
-                // 删除所有同名课程
-                courseData = courseData.filter(course => course.课程名称 !== originalName);
+                // 获取要更新的课程信息
+                const updatedCourse = {
+                    课程名称: courseName,
+                    星期: scheduleData[0].day,
+                    节次: scheduleData[0].periods[0],
+                    教师: courseTeacher,
+                    地点: courseLocation,
+                    备注: courseNotes,
+                    开始时间: startTime,
+                    结束时间: endTime,
+                    颜色: selectedColor
+                };
                 
-                // 添加更新后的课程
-                scheduleData.forEach(data => {
-                    data.periods.forEach(period => {
-                        const updatedCourse = {
-                            课程名称: courseName,
-                            星期: data.day,
-                            节次: period,
-                            教师: courseTeacher,
-                            地点: courseLocation,
-                            备注: courseNotes,
-                            开始时间: startTime,
-                            结束时间: endTime,
-                            颜色: selectedColor
-                        };
-                        
-                        courseData.push(updatedCourse);
-                    });
-                });
+                // 更新指定索引的课程
+                courseData[index] = updatedCourse;
                 
                 // 更新表格
                 updateCourseTable();
@@ -1158,8 +1161,8 @@
                     }
                     
                     // 只有当时间段信息存在时才显示
-                    if (course.时间) {
-                        cardContent += `<div class="text-xs font-medium text-blue-700">时间：${course.时间}</div>`;
+                    if (course.开始时间 && course.结束时间) {
+                        cardContent += `<div class="text-xs font-medium text-blue-700">时间：${course.开始时间}~${course.结束时间}</div>`;
                     }
                     
                     // 只有当备注信息存在时才显示
