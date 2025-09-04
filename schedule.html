@@ -1071,7 +1071,7 @@
                 // 关闭模态框
                 closeModal();
                 
-                alert('课程更新成功！');
+                //alert('课程更新成功！');
             }
         }
         
@@ -1198,9 +1198,23 @@
                     card.innerHTML = cardContent;
                     card.dataset.index = index;
                     
-                    // 应用颜色（基于课程名称）
-                    const color = getCourseColor(course.课程名称);
-                    card.style.backgroundColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                    // 应用保存的颜色，如果没有则使用默认颜色策略
+                    let bgColor = '';
+                    if (course.颜色) {
+                        // 如果课程有保存的颜色，则使用保存的颜色
+                        const rgbValues = course.颜色.split(',');
+                        if (rgbValues.length === 3) {
+                            bgColor = `rgb(${rgbValues[0]}, ${rgbValues[1]}, ${rgbValues[2]})`;
+                        }
+                    }
+                    
+                    if (!bgColor) {
+                        // 如果没有保存的颜色，则使用基于课程名称生成的颜色
+                        const color = getCourseColor(course.课程名称);
+                        bgColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                    }
+                    
+                    card.style.backgroundColor = bgColor;
                     
                     // 添加点击事件
                     card.addEventListener('click', function(e) {
