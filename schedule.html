@@ -1046,21 +1046,41 @@
                 const index = parseInt(document.getElementById('edit-course-index').value);
                 const originalCourse = courseData[index];
                 
-                // 获取要更新的课程信息
-                const updatedCourse = {
-                    课程名称: courseName,
-                    星期: scheduleData[0].day,
-                    节次: scheduleData[0].periods[0],
-                    教师: courseTeacher,
-                    地点: courseLocation,
-                    备注: courseNotes,
-                    开始时间: startTime,
-                    结束时间: endTime,
-                    颜色: selectedColor
-                };
+                // 获取当前编辑的星期和节次
+                const currentDay = originalCourse.星期;
+                const currentPeriod = originalCourse.节次;
                 
-                // 更新指定索引的课程
-                courseData[index] = updatedCourse;
+                // 检查是否有多条记录需要更新（多个节次的情况）
+                const scheduleItem = scheduleData[0]; // 只有一个星期节次选择项
+                const selectedPeriods = scheduleItem.periods;
+                const day = scheduleItem.day;
+                
+                // 在当前星期中找到所有同名的课程
+                const sameNameCoursesInCurrentDay = courseData.filter(course => 
+                    course.星期 === currentDay && course.课程名称 === courseName
+                );
+                
+                // 删除当前星期中所有同名课程
+                courseData = courseData.filter(course => 
+                    !(course.星期 === currentDay && course.课程名称 === courseName)
+                );
+                
+                // 为每个选中的节次创建新课程（仅在当前星期）
+                selectedPeriods.forEach(period => {
+                    const updatedCourse = {
+                        课程名称: courseName,
+                        星期: day,
+                        节次: period,
+                        教师: courseTeacher,
+                        地点: courseLocation,
+                        备注: courseNotes,
+                        开始时间: startTime,
+                        结束时间: endTime,
+                        颜色: selectedColor
+                    };
+                    
+                    courseData.push(updatedCourse);
+                });
                 
                 // 更新表格
                 updateCourseTable();
@@ -1070,8 +1090,6 @@
                 
                 // 关闭模态框
                 closeModal();
-                
-                //alert('课程更新成功！');
             }
         }
         
