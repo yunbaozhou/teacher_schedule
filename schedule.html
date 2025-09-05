@@ -884,18 +884,20 @@
                     </select>
                 </div>
                 <div class="col-span-5">
-                    <select multiple class="periods-select w-full px-2 py-1 border border-gray-300 rounded-md text-sm h-24">
-                        <option value="1">第1节</option>
-                        <option value="2">第2节</option>
-                        <option value="3">第3节</option>
-                        <option value="4">第4节</option>
-                        <option value="5">第5节</option>
-                        <option value="6">第6节</option>
-                        <option value="7">第7节</option>
-                        <option value="8">第8节</option>
-                        <option value="9">第9节</option>
-                        <option value="10">第10节</option>
-                    </select>
+                    <div class="periods-container border border-gray-300 rounded-md p-2 h-24 overflow-y-auto">
+                        <div class="grid grid-cols-2 gap-1">
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="1"><span class="ml-1 text-xs">第1节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="2"><span class="ml-1 text-xs">第2节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="3"><span class="ml-1 text-xs">第3节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="4"><span class="ml-1 text-xs">第4节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="5"><span class="ml-1 text-xs">第5节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="6"><span class="ml-1 text-xs">第6节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="7"><span class="ml-1 text-xs">第7节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="8"><span class="ml-1 text-xs">第8节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="9"><span class="ml-1 text-xs">第9节</span></label></div>
+                            <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="10"><span class="ml-1 text-xs">第10节</span></label></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-span-2 flex items-center">
                     <button type="button" class="remove-schedule-item text-red-500 hover:text-red-700">
@@ -911,7 +913,11 @@
             }
             
             if (period) {
-                newItem.querySelector('.periods-select').value = period;
+                // 在复选框中选中指定的节次
+                const checkbox = newItem.querySelector(`.period-checkbox[value="${period}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
             }
             
             // 绑定删除事件
@@ -956,15 +962,11 @@
                 const day = item.querySelector('.schedule-day').value;
                 let selectedPeriods = [];
                 
-                // 检查是编辑模式还是添加模式
-                const periodsSelect = item.querySelector('.periods-select');
+                // 获取选中的复选框（添加和编辑模式现在都使用复选框）
                 const periodCheckboxes = item.querySelectorAll('.period-checkbox:checked');
                 
-                if (periodsSelect) {
-                    // 添加模式 - 使用多选下拉框
-                    selectedPeriods = Array.from(periodsSelect.selectedOptions).map(option => parseInt(option.value));
-                } else if (periodCheckboxes.length > 0) {
-                    // 编辑模式 - 使用复选框
+                if (periodCheckboxes.length > 0) {
+                    // 使用复选框
                     selectedPeriods = Array.from(periodCheckboxes).map(checkbox => parseInt(checkbox.value));
                 }
                 
