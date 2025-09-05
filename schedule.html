@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com/3.3.3"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         body {
             font-family: 'Noto Sans SC', sans-serif;
@@ -219,6 +220,10 @@
                     <i class="fas fa-calendar-alt mr-2 text-indigo-500"></i>课程表
                 </h2>
                 <div class="flex space-x-2">
+                    <input type="file" id="import-file" accept=".xlsx" class="hidden" />
+                    <button id="import-schedule" class="bg-indigo-600 text-white py-1 px-3 rounded-md text-sm hover:bg-indigo-700 transition-colors">
+                        <i class="fas fa-file-import mr-1"></i>导入
+                    </button>
                     <button id="export-image" class="bg-pink-600 text-white py-1 px-3 rounded-md text-sm hover:bg-pink-700 transition-colors">
                         <i class="fas fa-file-image mr-1"></i>图片
                     </button>
@@ -669,6 +674,13 @@
             document.getElementById('export-word').addEventListener('click', exportToWord);
             document.getElementById('export-image').addEventListener('click', exportToImage);
             document.getElementById('print-schedule').addEventListener('click', printSchedule);
+            
+            // 绑定导入按钮事件
+            document.getElementById('import-schedule').addEventListener('click', function() {
+                document.getElementById('import-file').click();
+            });
+            
+            document.getElementById('import-file').addEventListener('change', importFromExcel);
             
             // 绑定复制和粘贴按钮事件
             document.getElementById('copy-course').addEventListener('click', copyCourse);
@@ -1565,6 +1577,160 @@
             `);
             
             printWindow.document.close();
+        }
+        
+        // 从Excel导入课程表数据
+        function importFromExcel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // 检查文件类型
+            if (!file.name.endsWith('.xlsx')) {
+                alert('请选择一个Excel文件 (.xlsx)');
+                event.target.value = ''; // 清空文件选择
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    
+                    // 获取第一个工作表
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    
+                    // 将工作表转换为JSON
+                    const jsonData = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+                    
+                    // 解析课程数据
+                    parseImportedData(jsonData);
+                    
+                    // 清空文件选择
+                    event.target.value = '';
+                } catch (error) {
+                    console.error('导入Excel文件时出错:', error);
+                    alert('导入失败: ' + error.message);
+                    event.target.value = ''; // 清空文件选择
+                }
+            };
+            
+            reader.onerror = function() {
+                alert('读取文件时发生错误');
+                event.target.value = ''; // 清空文件选择
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+        
+        // 解析导入的数据
+        function parseImportedData(data) {
+            if (!data || data.length < 3) {
+                alert('Excel文件格式不正确');
+                return;
+            }
+            
+            // 清空现有课程数据
+            courseData = [];
+            
+            // 定义星期映射
+            const dayMap = {
+                '星期一': '周一',
+                '星期二': '周二',
+                '星期三': '周三',
+                '星期四': '周四',
+                '星期五': '周五',
+                '星期六': '周六',
+                '星期日': '周日'
+            };
+            
+            // 从第三行开始处理数据（前两行是标题）
+            for (let row = 2; row < data.length; row++) {
+                const rowData = data[row];
+                if (!rowData || rowData.length === 0) continue;
+                
+                // 第一列是节次
+                const period = parseInt(rowData[0]);
+                if (isNaN(period)) continue;
+                
+                // 处理各天的课程数据
+                for (let col = 1; col <= 7; col++) {
+                    const cellData = rowData[col];
+                    if (!cellData) continue;
+                    
+                    // 根据列索引确定星期
+                    const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+                    const day = days[col - 1];
+                    
+                    // 解析单元格中的课程信息
+                    parseCourseCell(cellData, day, period);
+                }
+            }
+            
+            // 更新表格显示
+            updateCourseTable();
+            
+            // 检查冲突
+            checkConflicts();
+            
+            alert('课程表导入成功！');
+        }
+        
+        // 解析单元格中的课程信息
+        function parseCourseCell(cellData, day, period) {
+            // 将单元格数据转换为字符串
+            const data = cellData.toString().trim();
+            if (!data) return;
+            
+            // 分割课程信息（按换行符）
+            const lines = data.split(/\r?\n/);
+            if (lines.length === 0) return;
+            
+            // 第一行是课程名称
+            const courseName = lines[0].trim();
+            if (!courseName) return;
+            
+            // 解析其他信息
+            let teacher = '';
+            let location = '';
+            let notes = '';
+            let startTime = '';
+            let endTime = '';
+            
+            // 处理其他行的信息
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('教师：')) {
+                    teacher = line.substring(3).trim();
+                } else if (line.startsWith('地点：')) {
+                    location = line.substring(3).trim();
+                } else if (line.startsWith('备注：')) {
+                    notes = line.substring(3).trim();
+                } else if (line.startsWith('时间：')) {
+                    const timeStr = line.substring(3).trim();
+                    const timeParts = timeStr.split('~');
+                    if (timeParts.length === 2) {
+                        startTime = timeParts[0].trim();
+                        endTime = timeParts[1].trim();
+                    }
+                }
+            }
+            
+            // 创建课程对象
+            const course = {
+                课程名称: courseName,
+                星期: day,
+                节次: period,
+                教师: teacher || '未指定',
+                地点: location || '未指定',
+                备注: notes,
+                开始时间: startTime,
+                结束时间: endTime
+            };
+            
+            // 添加到课程数据中
+            courseData.push(course);
         }
 
     </script>

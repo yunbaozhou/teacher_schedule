@@ -264,6 +264,8 @@ def generate_excel(course_data, output_file=None, title="课程表"):
                     course_info += f"\n地点：{course['地点']}"
                 if '备注' in course and course['备注']:
                     course_info += f"\n备注：{course['备注']}"
+                if '开始时间' in course and '结束时间' in course and course['开始时间'] and course['结束时间']:
+                    course_info += f"\n时间：{course['开始时间']}~{course['结束时间']}"
                 
                 cell = ws.cell(row=period+2, column=col, value=course_info)
                 cell.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
