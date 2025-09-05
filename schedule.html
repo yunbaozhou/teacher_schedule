@@ -219,23 +219,36 @@
                 <h2 class="text-xl font-semibold text-gray-800 flex items-center">
                     <i class="fas fa-calendar-alt mr-2 text-indigo-500"></i>课程表
                 </h2>
-                <div class="flex space-x-2">
-                    <input type="file" id="import-file" accept=".xlsx" class="hidden" />
-                    <button id="import-schedule" class="bg-indigo-600 text-white py-1 px-3 rounded-md text-sm hover:bg-indigo-700 transition-colors">
-                        <i class="fas fa-file-import mr-1"></i>导入
-                    </button>
-                    <button id="export-image" class="bg-pink-600 text-white py-1 px-3 rounded-md text-sm hover:bg-pink-700 transition-colors">
-                        <i class="fas fa-file-image mr-1"></i>图片
-                    </button>
-                    <button id="export-excel" class="bg-green-600 text-white py-1 px-3 rounded-md text-sm hover:bg-green-700 transition-colors">
-                        <i class="fas fa-file-excel mr-1"></i>Excel
-                    </button>
-                    <button id="export-word" class="bg-blue-600 text-white py-1 px-3 rounded-md text-sm hover:bg-blue-700 transition-colors">
-                        <i class="fas fa-file-word mr-1"></i>Word
-                    </button>
-                    <button id="print-schedule" class="bg-purple-600 text-white py-1 px-3 rounded-md text-sm hover:bg-purple-700 transition-colors">
-                        <i class="fas fa-print mr-1"></i>打印
-                    </button>
+                <div class="flex space-x-4">
+                    <!-- 导入组 -->
+                    <div class="flex items-center">
+                        <span class="text-xs text-gray-500 mr-2">导入</span>
+                        <div class="flex items-center space-x-2 bg-gray-100 p-2 rounded-lg">
+                            <input type="file" id="import-file" accept=".xlsx" class="hidden" />
+                            <button id="import-schedule" class="bg-indigo-600 text-white py-1 px-3 rounded-md text-sm hover:bg-indigo-700 transition-colors flex items-center">
+                                <i class="fas fa-file-import mr-1"></i>导入
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 导出组 -->
+                    <div class="flex items-center">
+                        <span class="text-xs text-gray-500 mr-2">导出</span>
+                        <div class="flex items-center space-x-2 bg-gray-100 p-2 rounded-lg">
+                            <button id="export-image" class="bg-pink-600 text-white py-1 px-3 rounded-md text-sm hover:bg-pink-700 transition-colors flex items-center">
+                                <i class="fas fa-file-image mr-1"></i>图片
+                            </button>
+                            <button id="export-excel" class="bg-green-600 text-white py-1 px-3 rounded-md text-sm hover:bg-green-700 transition-colors flex items-center">
+                                <i class="fas fa-file-excel mr-1"></i>Excel
+                            </button>
+                            <button id="export-word" class="bg-blue-600 text-white py-1 px-3 rounded-md text-sm hover:bg-blue-700 transition-colors flex items-center">
+                                <i class="fas fa-file-word mr-1"></i>Word
+                            </button>
+                            <button id="print-schedule" class="bg-purple-600 text-white py-1 px-3 rounded-md text-sm hover:bg-purple-700 transition-colors flex items-center">
+                                <i class="fas fa-print mr-1"></i>打印
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
