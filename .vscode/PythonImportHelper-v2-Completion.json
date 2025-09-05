@@ -248,7 +248,7 @@
         "kind": 2,
         "importPath": "schedule",
         "description": "schedule",
-        "peekOfCode": "def generate_excel(course_data, output_file=None, title=\"课程表\"):\n    \"\"\"生成Excel格式课程表\"\"\"\n    # 创建工作簿和工作表\n    wb = Workbook()\n    ws = wb.active\n    ws.title = title\n    # 设置标题\n    ws['A1'] = title\n    ws.merge_cells('A1:H1')\n    ws['A1'].font = Font(size=16, bold=True)",
+        "peekOfCode": "def generate_excel(course_data, output_file=None, title=\"课程表\"):\n    \"\"\"生成Excel格式课程表\"\"\"\n    # 创建工作簿和工作表\n    wb = Workbook()\n    ws = wb.active\n    ws.title = title\n    # 创建黑色边框样式\n    black_border = Border(\n        left=Side(style='thin', color='000000'),\n        right=Side(style='thin', color='000000'),",
         "detail": "schedule",
         "documentation": {}
     },

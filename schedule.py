@@ -215,12 +215,6 @@ def generate_excel(course_data, output_file=None, title="课程表"):
     ws = wb.active
     ws.title = title
     
-    # 设置标题
-    ws['A1'] = title
-    ws.merge_cells('A1:H1')
-    ws['A1'].font = Font(size=16, bold=True)
-    ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
-    
     # 创建黑色边框样式
     black_border = Border(
         left=Side(style='thin', color='000000'),
@@ -229,13 +223,23 @@ def generate_excel(course_data, output_file=None, title="课程表"):
         bottom=Side(style='thin', color='000000')
     )
     
+    # 设置标题
+    ws['A1'] = title
+    ws.merge_cells('A1:H1')
+    ws['A1'].font = Font(size=16, bold=True)
+    ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
+    # 为课表标题行添加背景色（与HTML中bg-gray-200对应的十六进制颜色）
+    ws['A1'].fill = PatternFill(start_color="E5E7EB", end_color="E5E7EB", fill_type="solid")
+    # 为课表标题行添加黑色边框
+    ws['A1'].border = black_border
+    
     # 设置列标题
     headers = ['节次', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
     for col, header in enumerate(headers, 1):
         cell = ws.cell(row=2, column=col, value=header)
         cell.font = Font(bold=True)
         cell.alignment = Alignment(horizontal='center', vertical='center')
-        cell.fill = PatternFill(start_color="CCCCCC", end_color="CCCCCC", fill_type="solid")
+        cell.fill = PatternFill(start_color="F3F4F6", end_color="F3F4F6", fill_type="solid")
         cell.border = black_border  # 添加黑色边框
     
     # 确保节次是数字类型并排序
