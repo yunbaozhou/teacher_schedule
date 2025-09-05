@@ -264,7 +264,8 @@ def generate_excel(course_data, output_file=None, title="课程表"):
     
     for period in range(1, max_period + 1):
         # 节次列
-        cell = ws.cell(row=period+2, column=1, value=period)
+        cell = ws.cell(row=period+2, column=1, value=f"第{period}节")
+        cell.alignment = Alignment(horizontal='center', vertical='center')
         cell.border = black_border  # 添加黑色边框
         
         # 填充各天的课程

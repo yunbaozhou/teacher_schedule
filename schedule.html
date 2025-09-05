@@ -1672,7 +1672,15 @@
                 if (!rowData || rowData.length === 0) continue;
                 
                 // 第一列是节次
-                const period = parseInt(rowData[0]);
+                let period = parseInt(rowData[0]);
+                // 如果直接解析失败，尝试解析"第N节"格式
+                if (isNaN(period) && typeof rowData[0] === 'string') {
+                    const periodMatch = rowData[0].match(/第(\d+)节/);
+                    if (periodMatch && periodMatch[1]) {
+                        period = parseInt(periodMatch[1]);
+                    }
+                }
+                
                 if (isNaN(period)) continue;
                 
                 // 处理各天的课程数据
@@ -1695,7 +1703,7 @@
             // 检查冲突
             checkConflicts();
             
-            //alert('课程表导入成功！');
+            alert('课程表导入成功！');
         }
         
         // 解析单元格中的课程信息
