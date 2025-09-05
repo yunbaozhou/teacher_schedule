@@ -1044,45 +1044,32 @@
                 // 关闭模态框
                 closeModal();
             } else {
-                // 编辑模式
+                // 编辑模式 - 只更新当前正在编辑的课程
                 const index = parseInt(document.getElementById('edit-course-index').value);
                 const originalCourse = courseData[index];
                 
-                // 获取当前编辑的星期和节次
+                // 获取当前编辑的星期和节次（这些是不变的）
                 const currentDay = originalCourse.星期;
                 const currentPeriod = originalCourse.节次;
                 
-                // 检查是否有多条记录需要更新（多个节次的情况）
-                const scheduleItem = scheduleData[0]; // 只有一个星期节次选择项
-                const selectedPeriods = scheduleItem.periods;
-                const day = scheduleItem.day;
+                // 删除当前正在编辑的课程
+                courseData.splice(index, 1);
                 
-                // 在当前星期中找到所有同名的课程
-                const sameNameCoursesInCurrentDay = courseData.filter(course => 
-                    course.星期 === currentDay && course.课程名称 === courseName
-                );
+                // 创建更新后的课程信息（保持原来的星期和节次）
+                const updatedCourse = {
+                    课程名称: courseName,
+                    星期: currentDay,
+                    节次: currentPeriod,
+                    教师: courseTeacher,
+                    地点: courseLocation,
+                    备注: courseNotes,
+                    开始时间: startTime,
+                    结束时间: endTime,
+                    颜色: selectedColor
+                };
                 
-                // 删除当前星期中所有同名课程
-                courseData = courseData.filter(course => 
-                    !(course.星期 === currentDay && course.课程名称 === courseName)
-                );
-                
-                // 为每个选中的节次创建新课程（仅在当前星期）
-                selectedPeriods.forEach(period => {
-                    const updatedCourse = {
-                        课程名称: courseName,
-                        星期: day,
-                        节次: period,
-                        教师: courseTeacher,
-                        地点: courseLocation,
-                        备注: courseNotes,
-                        开始时间: startTime,
-                        结束时间: endTime,
-                        颜色: selectedColor
-                    };
-                    
-                    courseData.push(updatedCourse);
-                });
+                // 将更新后的课程添加回数据数组
+                courseData.push(updatedCourse);
                 
                 // 更新表格
                 updateCourseTable();
