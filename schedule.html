@@ -1647,6 +1647,14 @@
             // 清空现有课程数据
             courseData = [];
             
+            // 检查第一行是否包含课表标题
+            if (data[0] && data[0][0]) {
+                const title = data[0][0].toString().trim();
+                if (title && title !== "课表名称") {
+                    document.getElementById('timetable-title').value = title;
+                }
+            }
+            
             // 定义星期映射
             const dayMap = {
                 '星期一': '周一',
