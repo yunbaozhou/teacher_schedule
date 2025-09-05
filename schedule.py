@@ -221,6 +221,14 @@ def generate_excel(course_data, output_file=None, title="课程表"):
     ws['A1'].font = Font(size=16, bold=True)
     ws['A1'].alignment = Alignment(horizontal='center', vertical='center')
     
+    # 创建黑色边框样式
+    black_border = Border(
+        left=Side(style='thin', color='000000'),
+        right=Side(style='thin', color='000000'),
+        top=Side(style='thin', color='000000'),
+        bottom=Side(style='thin', color='000000')
+    )
+    
     # 设置列标题
     headers = ['节次', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
     for col, header in enumerate(headers, 1):
@@ -228,6 +236,7 @@ def generate_excel(course_data, output_file=None, title="课程表"):
         cell.font = Font(bold=True)
         cell.alignment = Alignment(horizontal='center', vertical='center')
         cell.fill = PatternFill(start_color="CCCCCC", end_color="CCCCCC", fill_type="solid")
+        cell.border = black_border  # 添加黑色边框
     
     # 确保节次是数字类型并排序
     course_data["节次"] = pd.to_numeric(course_data["节次"], errors='coerce')
@@ -251,7 +260,8 @@ def generate_excel(course_data, output_file=None, title="课程表"):
     
     for period in range(1, max_period + 1):
         # 节次列
-        ws.cell(row=period+2, column=1, value=period)
+        cell = ws.cell(row=period+2, column=1, value=period)
+        cell.border = black_border  # 添加黑色边框
         
         # 填充各天的课程
         for col, (weekday, weekday_key) in enumerate(zip(weekdays, weekday_keys), 2):
@@ -269,13 +279,15 @@ def generate_excel(course_data, output_file=None, title="课程表"):
                 
                 cell = ws.cell(row=period+2, column=col, value=course_info)
                 cell.alignment = Alignment(horizontal='left', vertical='top', wrap_text=True)
+                cell.border = black_border  # 添加黑色边框
                 
                 # 设置背景颜色
                 course_color = get_course_color(course['课程名称'])
                 hex_color = '{:02x}{:02x}{:02x}'.format(*course_color)
                 cell.fill = PatternFill(start_color=hex_color, end_color=hex_color, fill_type="solid")
             else:
-                ws.cell(row=period+2, column=col, value="")
+                cell = ws.cell(row=period+2, column=col, value="")
+                cell.border = black_border  # 添加黑色边框
     
     # 设置列宽和行高
     for col in range(1, 9):
