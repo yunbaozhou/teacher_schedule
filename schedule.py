@@ -360,6 +360,10 @@ def generate_word(course_data, output_file=None, user_selected_colors=None, titl
     table = doc.add_table(rows=14, cols=8)
     table.style = 'Table Grid'
     
+    # 设置表格宽度为100%
+    table.autofit = False
+    table.allow_autofit = False
+    
     # 设置表头
     hdr_cells = table.rows[0].cells
     hdr_cells[0].text = "节次/星期"
