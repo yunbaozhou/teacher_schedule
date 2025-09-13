@@ -26,7 +26,6 @@ COLOR_MAP = {
     "道法": (204, 153, 204),    # 紫色
     "美术": (255, 179, 136),    # 橙色
     "科学": (255, 229, 153),    # 浅黄色
-    "劳动": (204, 255, 204)     # 绿色
 }
 
 # 额外的默认颜色，用于自动分配给未定义颜色的课程
@@ -142,8 +141,17 @@ def export_excel():
     """导出为Excel"""
     try:
         data = request.json
+        if not data:
+            return jsonify({"success": False, "message": "请求数据为空"}), 400
+            
         courses = data.get('courses', [])
         title = data.get('title', '课程表')  # 从请求中获取标题
+        
+        # 检查课程数据
+        if not courses:
+            return jsonify({"success": False, "message": "没有课程数据可供导出"}), 400
+        
+        # 转换为DataFrame
         df = pd.DataFrame(courses)
         
         # 生成Excel文件到内存
@@ -160,7 +168,12 @@ def export_excel():
             mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
     except Exception as e:
-        return jsonify({"success": False, "message": str(e)}), 400
+        # 记录详细的错误信息
+        import traceback
+        error_info = traceback.format_exc()
+        print(f"导出Excel时发生错误: {str(e)}")
+        print(f"详细错误信息:\n{error_info}")
+        return jsonify({"success": False, "message": f"导出失败: {str(e)}"}), 500
 
 @app.route('/api/export/word', methods=['POST'])
 def export_word():
@@ -209,203 +222,250 @@ def detect_conflicts(course_data):
 
 def generate_excel(df, output, title):
     """生成Excel文件"""
-    # 创建工作簿和工作表
-    wb = Workbook()
-    ws = wb.active
-    ws.title = title
-    
-    # 设置标题
-    ws.merge_cells('A1:H1')
-    title_cell = ws['A1']
-    title_cell.value = title
-    title_cell.font = Font(size=16, bold=True)
-    title_cell.alignment = Alignment(horizontal='center', vertical='center')
-    
-    # 设置表头
-    headers = ['节次/星期', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
-    for col, header in enumerate(headers, 1):
-        cell = ws.cell(row=2, column=col, value=header)
-        cell.font = Font(bold=True)
-        cell.alignment = Alignment(horizontal='center', vertical='center')
-        cell.fill = PatternFill(start_color="CCCCCC", end_color="CCCCCC", fill_type="solid")
-    
-    # 设置上午/下午/晚自习标识
-    time_periods = ['上午', '下午', '晚自习']
-    period_rows = [3, 7, 11]  # 上午从第3行开始，下午从第7行开始，晚自习从第11行开始
-    
-    for i, period in enumerate(time_periods):
-        ws.merge_cells(start_row=period_rows[i], start_column=1, end_row=period_rows[i], end_column=8)
-        period_cell = ws.cell(row=period_rows[i], column=1, value=period)
-        period_cell.font = Font(bold=True)
-        period_cell.alignment = Alignment(horizontal='center', vertical='center')
-        period_cell.fill = PatternFill(start_color="E2E8F0", end_color="E2E8F0", fill_type="solid")
-    
-    # 填充课程数据
-    # 创建一个字典来快速查找课程
-    course_dict = {}
-    for _, course in df.iterrows():
-        key = (course['星期'], course['节次'])
-        if key not in course_dict:
-            course_dict[key] = []
-        course_dict[key].append(course)
-    
-    # 填充课程数据
-    for period_rows_idx, start_row in enumerate([4, 8, 12]):  # 课程从第4、7、11行开始
-        for row_offset in range(4):  # 每个时段4节课
-            row = start_row + row_offset
-            # 设置节次
-            period = row_offset + 1 + period_rows_idx * 4
-            ws.cell(row=row, column=1, value=f'第{period}节')
-            
-            # 填充每天的课程
-            days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-            for col, day in enumerate(days, 2):
+    try:
+        # 创建工作簿和工作表
+        wb = Workbook()
+        ws = wb.active
+        ws.title = title
+        
+        # 设置标题
+        ws.merge_cells('A1:H1')
+        title_cell = ws['A1']  # 获取合并区域的左上角单元格
+        title_cell.value = title
+        title_cell.font = Font(size=16, bold=True)
+        title_cell.alignment = Alignment(horizontal='center', vertical='center')
+        
+        # 设置表头
+        headers = ['节次/星期', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
+        for col, header in enumerate(headers, 1):
+            cell = ws.cell(row=2, column=col, value=header)
+            cell.font = Font(bold=True)
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+            cell.fill = PatternFill(start_color="CCCCCC", end_color="CCCCCC", fill_type="solid")
+        
+        # 设置上午/下午/晚自习标识
+        time_periods = ['上午', '下午', '晚自习']
+        period_rows = [3, 7, 11]  # 上午从第3行开始，下午从第7行开始，晚自习从第11行开始
+        
+        for i, period in enumerate(time_periods):
+            ws.merge_cells(start_row=period_rows[i], start_column=1, end_row=period_rows[i], end_column=8)
+            # 修复：直接通过坐标获取单元格而不是通过cell方法，避免对合并单元格的只读属性赋值
+            period_cell = ws[f'A{period_rows[i]}']  # 获取合并区域的左上角单元格
+            period_cell.value = period
+            period_cell.font = Font(bold=True)
+            period_cell.alignment = Alignment(horizontal='center', vertical='center')
+            period_cell.fill = PatternFill(start_color="E2E8F0", end_color="E2E8F0", fill_type="solid")
+        
+        # 填充课程数据
+        # 创建一个字典来快速查找课程
+        course_dict = {}
+        for _, course in df.iterrows():
+            # 确保星期和节次字段存在
+            day = course.get('星期', '')
+            period = course.get('节次', '')
+            if day and period:
                 key = (day, period)
-                if key in course_dict:
-                    courses = course_dict[key]
-                    # 如果同一时间有多门课程，显示所有课程
-                    course_texts = []
-                    for course in courses:
-                        course_text = course['课程名称']
-                        if course.get('教师') and course['教师'] != '未指定':
-                            course_text += f"\n教师：{course['教师']}"
-                        if course.get('地点') and course['地点'] != '未指定':
-                            course_text += f"\n地点：{course['地点']}"
-                        if course.get('开始时间') and course.get('结束时间'):
-                            course_text += f"\n时间：{course['开始时间']}~{course['结束时间']}"
-                        if course.get('备注'):
-                            course_text += f"\n备注：{course['备注']}"
-                        course_texts.append(course_text)
-                    
-                    cell = ws.cell(row=row, column=col, value='\n'.join(course_texts))
-                    cell.alignment = Alignment(wrap_text=True, vertical='center')
-                    
-                    # 获取课程颜色
-                    first_course = courses[0]
-                    color_rgb = get_course_color(first_course['课程名称'])
-                    color_hex = f"{color_rgb[0]:02X}{color_rgb[1]:02X}{color_rgb[2]:02X}"
-                    fill = PatternFill(start_color=color_hex, end_color=color_hex, fill_type="solid")
-                    cell.fill = fill
-    
-    # 设置列宽
-    column_widths = [12, 15, 15, 15, 15, 15, 15, 15]
-    for i, width in enumerate(column_widths, 1):
-        ws.column_dimensions[chr(64 + i)].width = width
-    
-    # 设置行高
-    for row in range(1, 16):
-        if row in [3, 7, 11]:  # 上午/下午/晚自习行
-            ws.row_dimensions[row].height = 25
-        else:
-            ws.row_dimensions[row].height = 40
-    
-    # 保存到输出流
-    wb.save(output)
+                if key not in course_dict:
+                    course_dict[key] = []
+                course_dict[key].append(course)
+        
+        # 填充课程数据
+        # 修改行索引以避免与合并单元格冲突
+        # 上午时段从第4行开始（第3行是合并的"上午"标识）
+        # 下午时段从第8行开始（第7行是合并的"下午"标识）
+        # 晚自习时段从第12行开始（第11行是合并的"晚自习"标识）
+        period_starts = [4, 8, 12]
+        for period_rows_idx, start_row in enumerate(period_starts):
+            for row_offset in range(4):  # 每个时段4节课
+                row = start_row + row_offset
+                # 设置节次
+                period = row_offset + 1 + period_rows_idx * 4
+                ws.cell(row=row, column=1, value=f'第{period}节')
+                
+                # 填充每天的课程
+                days = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
+                for col, day in enumerate(days, 2):  # 注意这里应该用星期一而不是周一
+                    # 修正：将day从"星期一"等转换为"周一"等以匹配数据
+                    day_short = day.replace('星期', '周')
+                    key = (day_short, period)
+                    if key in course_dict:
+                        courses = course_dict[key]
+                        # 如果同一时间有多门课程，显示所有课程
+                        course_texts = []
+                        for course in courses:
+                            # 获取课程信息，确保字段存在
+                            course_name = course.get('课程名称', '')
+                            teacher = course.get('教师', '')
+                            location = course.get('地点', '')
+                            start_time = course.get('开始时间', '')
+                            end_time = course.get('结束时间', '')
+                            notes = course.get('备注', '')
+                            
+                            course_text = course_name
+                            if teacher and teacher != '未指定':
+                                course_text += f"\n教师：{teacher}"
+                            if location and location != '未指定':
+                                course_text += f"\n地点：{location}"
+                            if start_time and end_time:
+                                course_text += f"\n时间：{start_time}~{end_time}"
+                            if notes:
+                                course_text += f"\n备注：{notes}"
+                            course_texts.append(course_text)
+                        
+                        cell = ws.cell(row=row, column=col, value='\n'.join(course_texts))
+                        cell.alignment = Alignment(wrap_text=True, vertical='center')
+                        
+                        # 获取课程颜色
+                        first_course = courses[0]
+                        course_name = first_course.get('课程名称', '')
+                        if course_name:
+                            color_rgb = get_course_color(course_name)
+                            color_hex = f"{color_rgb[0]:02X}{color_rgb[1]:02X}{color_rgb[2]:02X}"
+                            fill = PatternFill(start_color=color_hex, end_color=color_hex, fill_type="solid")
+                            cell.fill = fill
+        
+        # 设置列宽
+        column_widths = [12, 15, 15, 15, 15, 15, 15, 15]
+        for i, width in enumerate(column_widths, 1):
+            ws.column_dimensions[chr(64 + i)].width = width
+        
+        # 设置行高
+        for row in range(1, 16):
+            if row in [3, 7, 11]:  # 上午/下午/晚自习行
+                ws.row_dimensions[row].height = 25
+            else:
+                ws.row_dimensions[row].height = 40
+        
+        # 保存到输出流
+        wb.save(output)
+    except Exception as e:
+        # 记录详细的错误信息
+        import traceback
+        error_info = traceback.format_exc()
+        print(f"生成Excel时发生错误: {str(e)}")
+        print(f"详细错误信息:\n{error_info}")
+        raise e
 
 def generate_word(df, output, user_selected_colors, title):
     """生成Word文件"""
-    # 创建文档
-    doc = Document()
-    
-    # 设置页面方向为横向
-    section = doc.sections[0]
-    new_width, new_height = section.page_height, section.page_width
-    section.orientation = 1  # 横向
-    section.page_width = new_width
-    section.page_height = new_height
-    
-    # 添加标题
-    title_para = doc.add_paragraph()
-    title_para.alignment = 1  # 居中
-    title_run = title_para.add_run(title)
-    title_run.font.size = Pt(16)
-    title_run.font.bold = True
-    
-    # 创建表格
-    table = doc.add_table(rows=15, cols=8)
-    table.style = 'Table Grid'
-    
-    # 设置标题行
-    header_cells = table.rows[0].cells
-    headers = ['节次/星期', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
-    for i, header in enumerate(headers):
-        header_cells[i].text = header
-        # 设置标题样式
-        for paragraph in header_cells[i].paragraphs:
-            for run in paragraph.runs:
+    try:
+        # 创建文档
+        doc = Document()
+        
+        # 添加标题
+        title_para = doc.add_heading(title, 0)
+        title_para.alignment = 1  # 居中对齐
+        
+        # 添加表格（8列：节次/星期 + 7天）
+        table = doc.add_table(rows=1, cols=8)
+        table.style = 'Table Grid'
+        
+        # 设置表头
+        headers = ['节次/星期', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
+        hdr_cells = table.rows[0].cells
+        for i, header in enumerate(headers):
+            hdr_cells[i].text = header
+            # 设置表头样式
+            for paragraph in hdr_cells[i].paragraphs:
+                paragraph.alignment = 1  # 居中对齐
+                run = paragraph.runs[0]
                 run.font.bold = True
-    
-    # 合并标题行单元格
-    header_cells[0].merge(header_cells[7])
-    header_cells[0].text = title
-    
-    # 设置表头
-    header_cells = table.rows[1].cells
-    headers = ['节次/星期', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
-    for i, header in enumerate(headers):
-        header_cells[i].text = header
-        # 设置表头样式
-        for paragraph in header_cells[i].paragraphs:
-            for run in paragraph.runs:
-                run.font.bold = True
-    
-    # 设置上午/下午/晚自习标识
-    time_periods = ['上午', '下午', '晚自习']
-    period_rows = [2, 6, 10]  # 上午从第2行开始，下午从第6行开始，晚自习从第10行开始
-    
-    for i, (period, row_idx) in enumerate(zip(time_periods, period_rows)):
-        period_row = table.rows[row_idx]
-        period_cell = period_row.cells[0]
-        period_cell.text = period
-        period_cell.merge(period_row.cells[7])
-        # 设置时段样式
-        for paragraph in period_cell.paragraphs:
-            paragraph.alignment = 1  # 居中
-            for run in paragraph.runs:
-                run.font.bold = True
-    
-    # 创建一个字典来快速查找课程
-    course_dict = {}
-    for _, course in df.iterrows():
-        key = (course['星期'], course['节次'])
-        if key not in course_dict:
-            course_dict[key] = []
-        course_dict[key].append(course)
-    
-    # 填充课程数据
-    for period_rows_idx, start_row in enumerate([3, 7, 11]):  # 课程从第3、7、11行开始
-        for row_offset in range(4):  # 每个时段4节课
-            row = start_row + row_offset
-            table_row = table.rows[row]
-            
-            # 设置节次
-            period = row_offset + 1 + period_rows_idx * 4
-            table_row.cells[0].text = f'第{period}节'
-            
-            # 填充每天的课程
-            days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-            for col, day in enumerate(days, 1):
+        
+        # 创建课程字典以便快速查找
+        course_dict = {}
+        for _, course in df.iterrows():
+            day = course.get('星期', '')
+            period = course.get('节次', '')
+            if day and period:
                 key = (day, period)
-                if key in course_dict:
-                    courses = course_dict[key]
-                    # 如果同一时间有多门课程，显示所有课程
-                    course_texts = []
-                    for course in courses:
-                        course_text = course['课程名称']
-                        if course.get('教师') and course['教师'] != '未指定':
-                            course_text += f"\n教师：{course['教师']}"
-                        if course.get('地点') and course['地点'] != '未指定':
-                            course_text += f"\n地点：{course['地点']}"
-                        if course.get('开始时间') and course.get('结束时间'):
-                            course_text += f"\n时间：{course['开始时间']}~{course['结束时间']}"
-                        if course.get('备注'):
-                            course_text += f"\n备注：{course['备注']}"
-                        course_texts.append(course_text)
+                if key not in course_dict:
+                    course_dict[key] = []
+                course_dict[key].append(course)
+        
+        # 填充课程数据
+        # 为上午、下午、晚自习分别添加数据
+        periods_info = [
+            {'name': '上午', 'start': 1, 'count': 4},
+            {'name': '下午', 'start': 5, 'count': 4},
+            {'name': '晚自习', 'start': 9, 'count': 4}
+        ]
+        
+        row_index = 1  # 从第二行开始（第一行是表头）
+        for period_info in periods_info:
+            # 添加时段标识行
+            row_cells = table.add_row().cells
+            period_cell = row_cells[0]
+            period_cell.merge(row_cells[7])  # 合并所有列
+            period_cell.text = period_info['name']
+            
+            # 设置时段标识样式
+            for paragraph in period_cell.paragraphs:
+                paragraph.alignment = 1  # 居中对齐
+                run = paragraph.runs[0]
+                run.font.bold = True
+            
+            # 添加该时段的课程
+            for i in range(period_info['count']):
+                row_cells = table.add_row().cells
+                period_num = period_info['start'] + i
+                
+                # 设置节次
+                row_cells[0].text = f'第{period_num}节'
+                for paragraph in row_cells[0].paragraphs:
+                    paragraph.alignment = 1  # 居中对齐
+                
+                # 填充每天的课程
+                days = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
+                for col, day in enumerate(days, 1):
+                    # 将"星期一"等转换为"周一"等以匹配数据
+                    day_short = day.replace('星期', '周')
+                    key = (day_short, period_num)
                     
-                    table_row.cells[col].text = '\n'.join(course_texts)
-    
-    # 保存到输出流
-    doc.save(output)
+                    if key in course_dict:
+                        courses = course_dict[key]
+                        # 如果同一时间有多门课程，显示所有课程
+                        course_texts = []
+                        for course in courses:
+                            course_name = course.get('课程名称', '')
+                            teacher = course.get('教师', '')
+                            location = course.get('地点', '')
+                            start_time = course.get('开始时间', '')
+                            end_time = course.get('结束时间', '')
+                            notes = course.get('备注', '')
+                            
+                            course_text = course_name
+                            if teacher and teacher != '未指定':
+                                course_text += f"\n教师：{teacher}"
+                            if location and location != '未指定':
+                                course_text += f"\n地点：{location}"
+                            if start_time and end_time:
+                                course_text += f"\n时间：{start_time}~{end_time}"
+                            if notes:
+                                course_text += f"\n备注：{notes}"
+                            course_texts.append(course_text)
+                        
+                        row_cells[col].text = '\n'.join(course_texts)
+                        # 设置课程单元格样式
+                        for paragraph in row_cells[col].paragraphs:
+                            paragraph.alignment = 1  # 居中对齐
+                
+                row_index += 1
+        
+        # 设置列宽
+        for i, column in enumerate(table.columns):
+            for cell in column.cells:
+                cell.width = Inches(1.2)
+        
+        # 保存到输出流
+        doc.save(output)
+    except Exception as e:
+        # 记录详细的错误信息
+        import traceback
+        error_info = traceback.format_exc()
+        print(f"生成Word时发生错误: {str(e)}")
+        print(f"详细错误信息:\n{error_info}")
+        raise e
 
+# 启动Flask应用
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(debug=True, host='0.0.0.0', port=5000)
