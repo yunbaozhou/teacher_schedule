@@ -4,6 +4,8 @@ from docx.shared import Inches, RGBColor, Pt
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
+from docx.oxml.shared import OxmlElement, qn
+from docx.oxml import parse_xml
 import json
 import random
 from flask import Flask, request, jsonify, send_file, render_template
@@ -448,6 +450,18 @@ def generate_word(df, output, user_selected_colors, title):
                         # 设置课程单元格样式
                         for paragraph in row_cells[col].paragraphs:
                             paragraph.alignment = 1  # 居中对齐
+                        
+                        # 应用背景色
+                        first_course = courses[0]
+                        course_name = first_course.get('课程名称', '')
+                        if course_name:
+                            # 获取课程颜色
+                            color_rgb = get_course_color(course_name, user_selected_colors)
+                            # 在Word中应用背景色
+                            shading_el = parse_xml(
+                                f'<w:shd xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" w:fill="{color_rgb[0]:02X}{color_rgb[1]:02X}{color_rgb[2]:02X}"/>'
+                            )
+                            row_cells[col]._tc.get_or_add_tcPr().append(shading_el)
                 
                 row_index += 1
         
