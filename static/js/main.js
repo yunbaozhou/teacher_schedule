@@ -519,6 +519,16 @@ function saveCourse() {
         // 添加新课程
         scheduleData.forEach(data => {
             data.periods.forEach(period => {
+                // 如果没有选择颜色，则查找相同课程名称的颜色
+                let courseColor = selectedColor;
+                if (!courseColor) {
+                    // 查找相同课程名称的现有课程
+                    const existingCourse = courseData.find(c => c.课程名称 === courseName && c.颜色);
+                    if (existingCourse) {
+                        courseColor = existingCourse.颜色;
+                    }
+                }
+                
                 const newCourse = {
                     课程名称: courseName,
                     星期: data.day,
@@ -528,7 +538,7 @@ function saveCourse() {
                     备注: courseNotes,
                     开始时间: startTime,
                     结束时间: endTime,
-                    颜色: selectedColor
+                    颜色: courseColor
                 };
                 
                 courseData.push(newCourse);
