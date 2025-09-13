@@ -336,16 +336,16 @@ function openEditModal(index) {
         <div class="col-span-5">
             <div class="periods-container border border-gray-300 rounded-md p-2 h-24 overflow-y-auto">
                 <div class="grid grid-cols-2 gap-1">
-                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="1" ${course.节次 === 1 ? 'checked' : ''} ${course.节次 !== 1 ? 'disabled' : ''}><span class="ml-1 text-xs ${course.节次 !== 1 ? 'text-gray-400' : ''}">第1节</span></label></div>
-                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="2" ${course.节次 === 2 ? 'checked' : ''} ${course.节次 !== 2 ? 'disabled' : ''}><span class="ml-1 text-xs ${course.节次 !== 2 ? 'text-gray-400' : ''}">第2节</span></label></div>
-                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="3" ${course.节次 === 3 ? 'checked' : ''} ${course.节次 !== 3 ? 'disabled' : ''}><span class="ml-1 text-xs ${course.节次 !== 3 ? 'text-gray-400' : ''}">第3节</span></label></div>
-                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="4" ${course.节次 === 4 ? 'checked' : ''} ${course.节次 !== 4 ? 'disabled' : ''}><span class="ml-1 text-xs ${course.节次 !== 4 ? 'text-gray-400' : ''}">第4节</span></label></div>
-                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="5" ${course.节次 === 5 ? 'checked' : ''} ${course.节次 !== 5 ? 'disabled' : ''}><span class="ml-1 text-xs ${course.节次 !== 5 ? 'text-gray-400' : ''}">第5节</span></label></div>
-                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="6" ${course.节次 === 6 ? 'checked' : ''} ${course.节次 !== 6 ? 'disabled' : ''}><span class="ml-1 text-xs ${course.节次 !== 6 ? 'text-gray-400' : ''}">第6节</span></label></div>
-                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="7" ${course.节次 === 7 ? 'checked' : ''} ${course.节次 !== 7 ? 'disabled' : ''}><span class="ml-1 text-xs ${course.节次 !== 7 ? 'text-gray-400' : ''}">第7节</span></label></div>
-                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="8" ${course.节次 === 8 ? 'checked' : ''} ${course.节次 !== 8 ? 'disabled' : ''}><span class="ml-1 text-xs ${course.节次 !== 8 ? 'text-gray-400' : ''}">第8节</span></label></div>
-                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="9" ${course.节次 === 9 ? 'checked' : ''} ${course.节次 !== 9 ? 'disabled' : ''}><span class="ml-1 text-xs ${course.节次 !== 9 ? 'text-gray-400' : ''}">第9节</span></label></div>
-                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="10" ${course.节次 === 10 ? 'checked' : ''} ${course.节次 !== 10 ? 'disabled' : ''}><span class="ml-1 text-xs ${course.节次 !== 10 ? 'text-gray-400' : ''}">第10节</span></label></div>
+                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="1" ${course.节次 === 1 ? 'checked' : ''}><span class="ml-1 text-xs">第1节</span></label></div>
+                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="2" ${course.节次 === 2 ? 'checked' : ''}><span class="ml-1 text-xs">第2节</span></label></div>
+                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="3" ${course.节次 === 3 ? 'checked' : ''}><span class="ml-1 text-xs">第3节</span></label></div>
+                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="4" ${course.节次 === 4 ? 'checked' : ''}><span class="ml-1 text-xs">第4节</span></label></div>
+                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="5" ${course.节次 === 5 ? 'checked' : ''}><span class="ml-1 text-xs">第5节</span></label></div>
+                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="6" ${course.节次 === 6 ? 'checked' : ''}><span class="ml-1 text-xs">第6节</span></label></div>
+                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="7" ${course.节次 === 7 ? 'checked' : ''}><span class="ml-1 text-xs">第7节</span></label></div>
+                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="8" ${course.节次 === 8 ? 'checked' : ''}><span class="ml-1 text-xs">第8节</span></label></div>
+                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="9" ${course.节次 === 9 ? 'checked' : ''}><span class="ml-1 text-xs">第9节</span></label></div>
+                    <div><label class="inline-flex items-center"><input type="checkbox" class="period-checkbox" value="10" ${course.节次 === 10 ? 'checked' : ''}><span class="ml-1 text-xs">第10节</span></label></div>
                 </div>
             </div>
         </div>
@@ -367,8 +367,8 @@ function openEditModal(index) {
         }
     });
     
-    // 隐藏添加星期节次按钮
-    document.getElementById('add-schedule-item').style.display = 'none';
+    // 显示添加星期节次按钮
+    document.getElementById('add-schedule-item').style.display = 'block';
     
     // 显示删除按钮
     document.getElementById('delete-course-btn').classList.remove('hidden');
@@ -639,46 +639,67 @@ function saveCourse() {
         // 重置时间选择器选项
         resetTimeOptions();
     } else {
-        // 编辑模式 - 只更新当前正在编辑的课程
+        // 编辑模式 - 更新当前正在编辑的课程
         const index = parseInt(document.getElementById('edit-course-index').value);
         const originalCourse = courseData[index];
         
-        // 获取当前编辑的星期和节次（这些是不变的）
-        const currentDay = originalCourse.星期;
-        const currentPeriod = originalCourse.节次;
+        // 检查冲突（除了正在编辑的课程）
+        let hasConflict = false;
+        const conflicts = [];
         
-        // 获取原始课程名称
-        const originalCourseName = originalCourse.课程名称;
-        const newCourseName = courseName;
+        scheduleData.forEach(data => {
+            data.periods.forEach(period => {
+                const existingCourse = courseData.find((c, i) => 
+                    i !== index && 
+                    c.星期 === data.day && 
+                    c.节次 === period
+                );
+                
+                if (existingCourse) {
+                    hasConflict = true;
+                    conflicts.push(`星期${data.day} 第${period}节：${existingCourse.课程名称}`);
+                }
+            });
+        });
+        
+        if (hasConflict) {
+            const confirmResult = confirm('以下时间段存在冲突：\n' + conflicts.join('\n') + '\n是否继续更新？');
+            if (!confirmResult) {
+                return;
+            }
+        }
         
         // 删除当前正在编辑的课程
         courseData.splice(index, 1);
         
-        // 创建更新后的课程信息（保持原来的星期和节次）
-        const updatedCourse = {
-            课程名称: courseName,
-            星期: currentDay,
-            节次: currentPeriod,
-            教师: courseTeacher,
-            地点: courseLocation,
-            备注: courseNotes,
-            开始时间: startTime,
-            结束时间: endTime,
-            颜色: selectedColor
-        };
-        
-        // 将更新后的课程添加回数据数组
-        courseData.push(updatedCourse);
-        
-        // 如果课程名称改变或颜色改变，更新所有相同名称课程的颜色
-        if (originalCourseName !== newCourseName || originalCourse.颜色 !== selectedColor) {
-            // 更新所有相同课程名称的课程颜色
-            courseData.forEach(course => {
-                if (course.课程名称 === newCourseName) {
-                    course.颜色 = selectedColor;
+        // 添加新课程（可能有多个）
+        scheduleData.forEach(data => {
+            data.periods.forEach(period => {
+                // 如果没有选择颜色，则查找相同课程名称的颜色
+                let courseColor = selectedColor;
+                if (!courseColor) {
+                    // 查找相同课程名称的现有课程
+                    const existingCourse = courseData.find(c => c.课程名称 === courseName && c.颜色);
+                    if (existingCourse) {
+                        courseColor = existingCourse.颜色;
+                    }
                 }
+                
+                const newCourse = {
+                    课程名称: courseName,
+                    星期: data.day,
+                    节次: period,
+                    教师: courseTeacher,
+                    地点: courseLocation,
+                    备注: courseNotes,
+                    开始时间: startTime,
+                    结束时间: endTime,
+                    颜色: courseColor
+                };
+                
+                courseData.push(newCourse);
             });
-        }
+        });
         
         // 更新表格
         updateCourseTable();
