@@ -1036,6 +1036,25 @@ function exportToImage() {
         cell.style.verticalAlign = 'middle'; // 垂直居中
     });
     
+    // 特别处理标题单元格的垂直居中
+    const titleCell = tableClone.querySelector('thead tr:first-child th');
+    if (titleCell) {
+        titleCell.style.display = 'table-cell';
+        titleCell.style.verticalAlign = 'middle';
+        titleCell.style.height = '60px'; // 与CSS中设置的高度一致
+        
+        // 调整标题输入框样式
+        const titleInput = titleCell.querySelector('#timetable-title');
+        if (titleInput) {
+            titleInput.style.height = '100%';
+            titleInput.style.display = 'flex';
+            titleInput.style.alignItems = 'center';
+            titleInput.style.justifyContent = 'center';
+            titleInput.style.margin = '0';
+            titleInput.style.padding = '0';
+        }
+    }
+    
     // 调整课程卡片样式，使其与页面中的样式保持一致
     const courseCards = tableClone.querySelectorAll('.course-card');
     courseCards.forEach(card => {
