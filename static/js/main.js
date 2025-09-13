@@ -514,8 +514,9 @@ function saveCourse() {
     const endTime = document.getElementById('edit-course-end-time').value;
     const selectedColor = document.getElementById('selected-color').value;
     
-    if (!courseName) {
-        alert('请输入课程名称');
+    // 验证课程名称和时间段不能同时为空
+    if (!courseName.trim() && (!startTime || !endTime)) {
+        alert('课程名称和时间段不能同时为空，请至少填写其中一个！');
         return;
     }
     
