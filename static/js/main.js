@@ -64,6 +64,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // 保存结束时间选项的副本，用于重置
+    endSelect.dataset.allOptions = JSON.stringify(Array.from(endSelect.options).map(option => ({
+        value: option.value,
+        text: option.text
+    })));
+    
+    // 绑定开始时间选择器变化事件
+    startSelect.addEventListener('change', function() {
+        updateTimeOptions();
+    });
+    
     // 绑定表格单元格点击事件
     document.querySelectorAll('#course-table tbody td[data-period]').forEach(cell => {
         cell.addEventListener('click', function(e) {
@@ -433,6 +444,63 @@ function addScheduleSelectionItem(day, period) {
 // 关闭模态框
 function closeModal() {
     document.getElementById('edit-modal').style.display = 'none';
+    // 重置时间选择器选项
+    resetTimeOptions();
+}
+
+// 重置时间选择器选项
+function resetTimeOptions() {
+    const startSelect = document.getElementById('edit-course-start-time');
+    const endSelect = document.getElementById('edit-course-end-time');
+    
+    // 恢复所有结束时间选项
+    const allOptions = JSON.parse(endSelect.dataset.allOptions);
+    endSelect.innerHTML = '';
+    allOptions.forEach(optionData => {
+        const option = new Option(optionData.text, optionData.value);
+        endSelect.add(option);
+    });
+}
+
+// 更新时间选项的可用性
+function updateTimeOptions() {
+    const startSelect = document.getElementById('edit-course-start-time');
+    const endSelect = document.getElementById('edit-course-end-time');
+    const startTime = startSelect.value;
+    
+    if (!startTime) {
+        // 如果没有选择开始时间，恢复所有结束时间选项
+        resetTimeOptions();
+        return;
+    }
+    
+    // 解析开始时间
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const startTotalMinutes = startHour * 60 + startMinute;
+    
+    // 获取所有选项数据
+    const allOptions = JSON.parse(endSelect.dataset.allOptions);
+    
+    // 清空结束时间选择器
+    endSelect.innerHTML = '';
+    
+    // 添加空选项
+    const emptyOption = new Option('选择结束时间', '');
+    endSelect.add(emptyOption);
+    
+    // 只添加晚于开始时间的选项
+    allOptions.forEach(optionData => {
+        if (optionData.value) {
+            const [endHour, endMinute] = optionData.value.split(':').map(Number);
+            const endTotalMinutes = endHour * 60 + endMinute;
+            
+            // 只显示晚于开始时间的选项
+            if (endTotalMinutes > startTotalMinutes) {
+                const option = new Option(optionData.text, optionData.value);
+                endSelect.add(option);
+            }
+        }
+    });
 }
 
 // 保存课程（添加或编辑）
@@ -482,6 +550,20 @@ function saveCourse() {
     if (!hasSelectedPeriod) {
         alert('请至少选择一个节次');
         return;
+    }
+    
+    // 验证时间设置是否合理
+    if (startTime && endTime) {
+        // 将时间字符串转换为可比较的格式
+        const startParts = startTime.split(':');
+        const endParts = endTime.split(':');
+        const startMinutes = parseInt(startParts[0]) * 60 + parseInt(startParts[1]);
+        const endMinutes = parseInt(endParts[0]) * 60 + parseInt(endParts[1]);
+        
+        if (endMinutes <= startMinutes) {
+            alert('结束时间必须晚于开始时间');
+            return;
+        }
     }
     
     // 构建时间字符串
@@ -553,6 +635,9 @@ function saveCourse() {
         
         // 关闭模态框
         closeModal();
+        
+        // 重置时间选择器选项
+        resetTimeOptions();
     } else {
         // 编辑模式 - 只更新当前正在编辑的课程
         const index = parseInt(document.getElementById('edit-course-index').value);
@@ -589,6 +674,9 @@ function saveCourse() {
         
         // 关闭模态框
         closeModal();
+        
+        // 重置时间选择器选项
+        resetTimeOptions();
     }
 }
 
