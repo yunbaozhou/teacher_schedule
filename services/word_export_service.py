@@ -3,7 +3,7 @@ from docx import Document
 from docx.shared import Inches
 from docx.oxml import parse_xml
 from io import BytesIO
-from config import EXPORT_CONFIG
+from config import EXPORT_CONFIG, DEFAULT_COLORS
 from services.color_service import get_course_color
 from services.base_export_service import BaseExportService
 
@@ -45,6 +45,9 @@ class WordExportService(BaseExportService):
                     if key not in course_dict:
                         course_dict[key] = []
                     course_dict[key].append(course)
+            
+            # Keep track of assigned colors to ensure different courses have different colors
+            assigned_colors = {}
             
             # Fill course data
             # Add data for morning, afternoon, and evening study separately
@@ -117,8 +120,25 @@ class WordExportService(BaseExportService):
                             first_course = courses[0]
                             course_name = first_course.get('课程名称', '')
                             if course_name:
-                                # Get course color
-                                color_rgb = get_course_color(course_name, user_selected_colors)
+                                # Check if we've already assigned a color for this course name
+                                if course_name in assigned_colors:
+                                    # Use the already assigned color for consistency
+                                    color_rgb = assigned_colors[course_name]
+                                else:
+                                    # Get color from color service
+                                    color_rgb = get_course_color(course_name, user_selected_colors)
+                                    
+                                    # Ensure this color is not already used by another course
+                                    used_colors = set(assigned_colors.values())
+                                    color_index = 0
+                                    # If the color is already used, find a different one
+                                    while tuple(color_rgb) in used_colors and color_index < len(DEFAULT_COLORS):
+                                        color_rgb = DEFAULT_COLORS[color_index]
+                                        color_index += 1
+                                    
+                                    # Store the assigned color for this course name
+                                    assigned_colors[course_name] = color_rgb
+                                
                                 # Apply background color in Word
                                 shading_el = parse_xml(
                                     f'<w:shd xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" w:fill="{color_rgb[0]:02X}{color_rgb[1]:02X}{color_rgb[2]:02X}"/>'
