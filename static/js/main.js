@@ -639,7 +639,7 @@ function saveCourse() {
         // 重置时间选择器选项
         resetTimeOptions();
     } else {
-        // 编辑模式 - 更新当前正在编辑的课程
+        // 编辑模式 - 只更新当前正在编辑的课程
         const index = parseInt(document.getElementById('edit-course-index').value);
         const originalCourse = courseData[index];
         
@@ -668,6 +668,10 @@ function saveCourse() {
                 return;
             }
         }
+        
+        // 获取原始课程名称和颜色
+        const originalCourseName = originalCourse.课程名称;
+        const originalColor = originalCourse.颜色;
         
         // 删除当前正在编辑的课程
         courseData.splice(index, 1);
@@ -700,6 +704,15 @@ function saveCourse() {
                 courseData.push(newCourse);
             });
         });
+        
+        // 如果颜色被修改了，则更新所有同名课程的颜色
+        if (selectedColor && selectedColor !== originalColor) {
+            courseData.forEach(course => {
+                if (course.课程名称 === courseName) {
+                    course.颜色 = selectedColor;
+                }
+            });
+        }
         
         // 更新表格
         updateCourseTable();
