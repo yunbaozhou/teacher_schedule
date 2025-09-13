@@ -647,6 +647,10 @@ function saveCourse() {
         const currentDay = originalCourse.星期;
         const currentPeriod = originalCourse.节次;
         
+        // 获取原始课程名称
+        const originalCourseName = originalCourse.课程名称;
+        const newCourseName = courseName;
+        
         // 删除当前正在编辑的课程
         courseData.splice(index, 1);
         
@@ -665,6 +669,16 @@ function saveCourse() {
         
         // 将更新后的课程添加回数据数组
         courseData.push(updatedCourse);
+        
+        // 如果课程名称改变或颜色改变，更新所有相同名称课程的颜色
+        if (originalCourseName !== newCourseName || originalCourse.颜色 !== selectedColor) {
+            // 更新所有相同课程名称的课程颜色
+            courseData.forEach(course => {
+                if (course.课程名称 === newCourseName) {
+                    course.颜色 = selectedColor;
+                }
+            });
+        }
         
         // 更新表格
         updateCourseTable();
