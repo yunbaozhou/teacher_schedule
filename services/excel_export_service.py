@@ -1,6 +1,6 @@
 import pandas as pd
 from openpyxl import Workbook
-from openpyxl.styles import PatternFill, Font, Alignment
+from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
 from io import BytesIO
 from config import EXPORT_CONFIG
 from services.color_service import get_course_color
@@ -16,6 +16,14 @@ class ExcelExportService(BaseExportService):
             wb = Workbook()
             ws = wb.active
             ws.title = title
+            
+            # Define border style with black color to match requirement
+            thin_border = Border(
+                left=Side(style='thin', color='000000'),
+                right=Side(style='thin', color='000000'),
+                top=Side(style='thin', color='000000'),
+                bottom=Side(style='thin', color='000000')
+            )
             
             # Create a dictionary for quick course lookup
             course_dict = {}
@@ -35,6 +43,7 @@ class ExcelExportService(BaseExportService):
             title_cell.value = title
             title_cell.font = Font(size=16, bold=True)
             title_cell.alignment = Alignment(horizontal='center', vertical='center')
+            title_cell.border = thin_border
             
             # Set headers
             headers = ['节次/星期', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
@@ -43,6 +52,7 @@ class ExcelExportService(BaseExportService):
                 cell.font = Font(bold=True)
                 cell.alignment = Alignment(horizontal='center', vertical='center')
                 cell.fill = PatternFill(start_color="CCCCCC", end_color="CCCCCC", fill_type="solid")
+                cell.border = thin_border
             
             # Set morning/afternoon/evening study identifiers and courses
             time_periods = ['上午', '下午', '晚自习']
@@ -60,6 +70,7 @@ class ExcelExportService(BaseExportService):
                 period_cell.font = Font(bold=True)
                 period_cell.alignment = Alignment(horizontal='center', vertical='center')
                 period_cell.fill = PatternFill(start_color="E2E8F0", end_color="E2E8F0", fill_type="solid")
+                period_cell.border = thin_border
                 
                 # Fill courses for this period (4 classes)
                 for row_offset in range(4):
@@ -67,6 +78,9 @@ class ExcelExportService(BaseExportService):
                     period_num = row_offset + 1 + i * 4  # Period number: 1-4, 5-8, 9-12
                     # Set period
                     period_cell = ws.cell(row=row, column=1, value=f'第{period_num}节')
+                    period_cell.alignment = Alignment(horizontal='center', vertical='center')
+                    period_cell.fill = PatternFill(start_color="F0F0F0", end_color="F0F0F0", fill_type="solid")
+                    period_cell.border = thin_border
                     column_contents[1].append(period_cell.value)
                     
                     # Fill daily courses
@@ -101,7 +115,8 @@ class ExcelExportService(BaseExportService):
                             
                             cell_content = '\n'.join(course_texts)
                             cell = ws.cell(row=row, column=col, value=cell_content)
-                            cell.alignment = Alignment(wrap_text=True, vertical='center')
+                            cell.alignment = Alignment(wrap_text=True, vertical='center', horizontal='left')
+                            cell.border = thin_border
                             column_contents[col].append(cell_content)
                             
                             # Get course color - ensure it matches frontend
@@ -115,6 +130,8 @@ class ExcelExportService(BaseExportService):
                                 cell.fill = fill
                         else:
                             # Even if no course, add empty content for width calculation
+                            cell = ws.cell(row=row, column=col, value="")
+                            cell.border = thin_border
                             column_contents[col].append("")
             
             # Set column widths based on content
