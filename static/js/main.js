@@ -828,13 +828,13 @@ function updateCourseTable() {
             // 构建卡片内容，只显示存在的信息
             let cardContent = `<div class="font-bold text-lg">${course.课程名称}</div>`;
             
-            // 只有当教师信息存在且不为"未指定"时才显示
-            if (course.教师 && course.教师 !== '未指定') {
+            // 只有当教师信息存在且不为空时才显示
+            if (course.教师 && course.教师.trim() !== '') {
                 cardContent += `<div class="text-xs">教师：${course.教师}</div>`;
             }
             
-            // 只有当地点信息存在且不为"未指定"时才显示
-            if (course.地点 && course.地点 !== '未指定') {
+            // 只有当地点信息存在且不为空时才显示
+            if (course.地点 && course.地点.trim() !== '') {
                 cardContent += `<div class="text-xs">地点：${course.地点}</div>`;
             }
             
@@ -1390,8 +1390,8 @@ function parseCourseCell(cellData, day, period) {
         课程名称: courseName,
         星期: day,
         节次: period,
-        教师: teacher || '未指定',
-        地点: location || '未指定',
+        教师: teacher,
+        地点: location,
         备注: notes,
         开始时间: startTime,
         结束时间: endTime
