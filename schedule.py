@@ -230,6 +230,18 @@ def generate_excel(df, output, title):
         ws = wb.active
         ws.title = title
         
+        # 创建一个字典来快速查找课程
+        course_dict = {}
+        for _, course in df.iterrows():
+            # 确保星期和节次字段存在
+            day = course.get('星期', '')
+            period = course.get('节次', '')
+            if day and period:
+                key = (day, period)
+                if key not in course_dict:
+                    course_dict[key] = []
+                course_dict[key].append(course)
+        
         # 设置标题
         ws.merge_cells('A1:H1')
         title_cell = ws['A1']  # 获取合并区域的左上角单元格
@@ -245,51 +257,33 @@ def generate_excel(df, output, title):
             cell.alignment = Alignment(horizontal='center', vertical='center')
             cell.fill = PatternFill(start_color="CCCCCC", end_color="CCCCCC", fill_type="solid")
         
-        # 设置上午/下午/晚自习标识
+        # 设置上午/下午/晚自习标识和课程
         time_periods = ['上午', '下午', '晚自习']
-        period_rows = [3, 7, 11]  # 上午从第3行开始，下午从第7行开始，晚自习从第11行开始
+        # 每个时段开始行: 上午从第3行开始，下午从第8行开始，晚自习从第13行开始
+        period_starts = [3, 8, 13]
         
-        for i, period in enumerate(time_periods):
-            ws.merge_cells(start_row=period_rows[i], start_column=1, end_row=period_rows[i], end_column=8)
-            # 修复：直接通过坐标获取单元格而不是通过cell方法，避免对合并单元格的只读属性赋值
-            period_cell = ws[f'A{period_rows[i]}']  # 获取合并区域的左上角单元格
+        for i, (period, start_row) in enumerate(zip(time_periods, period_starts)):
+            # 设置时段标识（合并单元格）
+            ws.merge_cells(start_row=start_row, start_column=1, end_row=start_row, end_column=8)
+            period_cell = ws[f'A{start_row}']  # 获取合并区域的左上角单元格
             period_cell.value = period
             period_cell.font = Font(bold=True)
             period_cell.alignment = Alignment(horizontal='center', vertical='center')
             period_cell.fill = PatternFill(start_color="E2E8F0", end_color="E2E8F0", fill_type="solid")
-        
-        # 填充课程数据
-        # 创建一个字典来快速查找课程
-        course_dict = {}
-        for _, course in df.iterrows():
-            # 确保星期和节次字段存在
-            day = course.get('星期', '')
-            period = course.get('节次', '')
-            if day and period:
-                key = (day, period)
-                if key not in course_dict:
-                    course_dict[key] = []
-                course_dict[key].append(course)
-        
-        # 填充课程数据
-        # 修改行索引以避免与合并单元格冲突
-        # 上午时段从第4行开始（第3行是合并的"上午"标识）
-        # 下午时段从第8行开始（第7行是合并的"下午"标识）
-        # 晚自习时段从第12行开始（第11行是合并的"晚自习"标识）
-        period_starts = [4, 8, 12]
-        for period_rows_idx, start_row in enumerate(period_starts):
-            for row_offset in range(4):  # 每个时段4节课
-                row = start_row + row_offset
+            
+            # 填充该时段的课程（4节课）
+            for row_offset in range(4):
+                row = start_row + row_offset + 1  # 时段标识行+1开始填课程
+                period_num = row_offset + 1 + i * 4  # 节次编号：1-4, 5-8, 9-12
                 # 设置节次
-                period = row_offset + 1 + period_rows_idx * 4
-                ws.cell(row=row, column=1, value=f'第{period}节')
+                ws.cell(row=row, column=1, value=f'第{period_num}节')
                 
                 # 填充每天的课程
                 days = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
-                for col, day in enumerate(days, 2):  # 注意这里应该用星期一而不是周一
-                    # 修正：将day从"星期一"等转换为"周一"等以匹配数据
+                for col, day in enumerate(days, 2):
+                    # 将"星期一"等转换为"周一"等以匹配数据
                     day_short = day.replace('星期', '周')
-                    key = (day_short, period)
+                    key = (day_short, period_num)
                     if key in course_dict:
                         courses = course_dict[key]
                         # 如果同一时间有多门课程，显示所有课程
@@ -332,8 +326,8 @@ def generate_excel(df, output, title):
             ws.column_dimensions[chr(64 + i)].width = width
         
         # 设置行高
-        for row in range(1, 16):
-            if row in [3, 7, 11]:  # 上午/下午/晚自习行
+        for row in range(1, 18):  # 更新行范围以适应新的结构
+            if row in [3, 8, 13]:  # 上午/下午/晚自习行
                 ws.row_dimensions[row].height = 25
             else:
                 ws.row_dimensions[row].height = 40
