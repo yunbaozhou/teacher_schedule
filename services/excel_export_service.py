@@ -49,6 +49,9 @@ class ExcelExportService(BaseExportService):
             # Each period start row: morning starts from row 3, afternoon from row 8, evening study from row 13
             period_starts = [3, 8, 13]
             
+            # Store content for calculating column widths
+            column_contents = {i: [] for i in range(1, 9)}
+            
             for i, (period, start_row) in enumerate(zip(time_periods, period_starts)):
                 # Set period identifier (merge cells)
                 ws.merge_cells(start_row=start_row, start_column=1, end_row=start_row, end_column=8)
@@ -63,7 +66,8 @@ class ExcelExportService(BaseExportService):
                     row = start_row + row_offset + 1  # Start filling courses from period identifier row + 1
                     period_num = row_offset + 1 + i * 4  # Period number: 1-4, 5-8, 9-12
                     # Set period
-                    ws.cell(row=row, column=1, value=f'第{period_num}节')
+                    period_cell = ws.cell(row=row, column=1, value=f'第{period_num}节')
+                    column_contents[1].append(period_cell.value)
                     
                     # Fill daily courses
                     days = ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日']
@@ -95,29 +99,53 @@ class ExcelExportService(BaseExportService):
                                     course_text += f"\n备注：{notes}"
                                 course_texts.append(course_text)
                             
-                            cell = ws.cell(row=row, column=col, value='\n'.join(course_texts))
+                            cell_content = '\n'.join(course_texts)
+                            cell = ws.cell(row=row, column=col, value=cell_content)
                             cell.alignment = Alignment(wrap_text=True, vertical='center')
+                            column_contents[col].append(cell_content)
                             
-                            # Get course color
+                            # Get course color - ensure it matches frontend
                             first_course = courses[0]
                             course_name = first_course.get('课程名称', '')
+                            user_selected_colors = first_course.get('user_selected_colors', {})
                             if course_name:
-                                color_rgb = get_course_color(course_name)
+                                color_rgb = get_course_color(course_name, user_selected_colors)
                                 color_hex = f"{color_rgb[0]:02X}{color_rgb[1]:02X}{color_rgb[2]:02X}"
                                 fill = PatternFill(start_color=color_hex, end_color=color_hex, fill_type="solid")
                                 cell.fill = fill
+                        else:
+                            # Even if no course, add empty content for width calculation
+                            column_contents[col].append("")
             
-            # Set column widths
-            column_widths = [12, 15, 15, 15, 15, 15, 15, 15]
-            for i, width in enumerate(column_widths, 1):
-                ws.column_dimensions[chr(64 + i)].width = width
+            # Set column widths based on content
+            for col_idx in range(1, 9):
+                # Calculate width based on content
+                max_width = 12  # Minimum width
+                for content in column_contents[col_idx]:
+                    # Calculate max line width in multi-line content
+                    lines = content.split('\n')
+                    for line in lines:
+                        # For Chinese characters, we need more width
+                        line_width = 0
+                        for char in line:
+                            # Chinese characters take more space
+                            if ord(char) > 127:  # Unicode value for non-ASCII characters
+                                line_width += 2.5  # Increased width for Chinese characters
+                            else:
+                                line_width += 1.2  # Slightly more width for English characters
+                        
+                        max_width = max(max_width, line_width)
+                
+                # Apply adjustments - ensure time can be displayed in one line
+                adjusted_width = min(max(max_width, 15), 50)  # Ensure minimum 15 for time display
+                ws.column_dimensions[chr(64 + col_idx)].width = adjusted_width
             
             # Set row heights
             for row in range(1, 18):  # Update row range to fit new structure
                 if row in [3, 8, 13]:  # Morning/afternoon/evening study rows
                     ws.row_dimensions[row].height = 25
                 else:
-                    ws.row_dimensions[row].height = 40
+                    ws.row_dimensions[row].height = 60  # Increased height for better text display
             
             # Save to output stream
             wb.save(output)
