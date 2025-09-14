@@ -119,7 +119,5 @@ def get_statistics():
         stats["export_stats"] = {"excel": 0, "word": 0, "image": 0, "print": 0}
     if "import_stats" not in stats:
         stats["import_stats"] = {"total": 0}
-    if "usage_history" not in stats:
-        stats["usage_history"] = []
         
     return jsonify(stats)
