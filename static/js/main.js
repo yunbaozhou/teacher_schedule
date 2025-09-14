@@ -975,11 +975,6 @@ function exportToExcel() {
         return;
     }
     
-    // 更新统计数据
-    statistics.export.excel++;
-    statistics.total++;
-    updateStatisticsDisplay();
-    
     // 获取课表标题
     const timetableTitle = document.getElementById('timetable-title').value || '课程表';
     
@@ -996,6 +991,8 @@ function exportToExcel() {
     })
     .then(response => {
         if (response.ok) {
+            // 更新统计数据并重新加载
+            loadStatistics();
             return response.blob();
         }
         throw new Error('导出失败');
@@ -1023,11 +1020,6 @@ function exportToWord() {
         return;
     }
     
-    // 更新统计数据
-    statistics.export.word++;
-    statistics.total++;
-    updateStatisticsDisplay();
-    
     // 获取课表标题
     const timetableTitle = document.getElementById('timetable-title').value || '课程表';
     
@@ -1045,6 +1037,8 @@ function exportToWord() {
     })
     .then(response => {
         if (response.ok) {
+            // 更新统计数据并重新加载
+            loadStatistics();
             return response.blob();
         }
         throw new Error('导出失败');
@@ -1071,23 +1065,6 @@ function exportToImage() {
         alert('请先添加课程数据');
         return;
     }
-    
-    // 更新统计数据
-    statistics.export.image++;
-    statistics.total++;
-    updateStatisticsDisplay();
-    
-    // 发送请求到后端以跟踪统计数据
-    fetch('/api/export/image', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({})
-    }).catch(error => {
-        // 忽略错误，因为我们主要关心前端统计
-        console.log('Failed to track image export on backend');
-    });
     
     // 显示加载状态
     const originalText = document.getElementById('export-image').innerHTML;
@@ -1195,6 +1172,23 @@ function exportToImage() {
         link.download = timetableTitle + '.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
+        
+        // 发送请求到后端以跟踪统计数据
+        fetch('/api/export/image', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        }).then(response => {
+            if (response.ok) {
+                // 更新统计数据并重新加载
+                loadStatistics();
+            }
+        }).catch(error => {
+            // 忽略错误，因为我们主要关心前端统计
+            console.log('Failed to track image export on backend');
+        });
     }).catch(error => {
         // 恢复按钮状态
         document.getElementById('export-image').innerHTML = originalText;
@@ -1210,6 +1204,11 @@ function exportToImage() {
 
 // 打印课程表
 function printSchedule() {
+    // 更新统计数据
+    statistics.export.print++;
+    statistics.total++;
+    updateStatisticsDisplay();
+    
     // 发送请求到后端以跟踪统计数据
     fetch('/api/export/print', {
         method: 'POST',
@@ -1217,15 +1216,15 @@ function printSchedule() {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({})
+    }).then(response => {
+        if (response.ok) {
+            // 可选：重新加载最新统计数据
+            loadStatistics();
+        }
     }).catch(error => {
         // 忽略错误，因为我们主要关心前端统计
         console.log('Failed to track print action on backend');
     });
-    
-    // 更新统计数据
-    statistics.export.print++;
-    statistics.total++;
-    updateStatisticsDisplay();
     
     // 获取课表标题
     const timetableTitle = document.getElementById('timetable-title').value || '课程表';
@@ -1357,11 +1356,6 @@ function importFromExcel(event) {
             // 清空文件选择
             event.target.value = '';
             
-            // 更新统计数据
-            statistics.import++;
-            statistics.total++;
-            updateStatisticsDisplay();
-            
             // 发送请求到后端以跟踪统计数据
             fetch('/api/import', {
                 method: 'POST',
@@ -1369,9 +1363,19 @@ function importFromExcel(event) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({})
+            }).then(response => {
+                if (response.ok) {
+                    // 更新统计数据并重新加载
+                    loadStatistics();
+                }
             }).catch(error => {
                 // 忽略错误，因为我们主要关心前端统计
                 console.log('Failed to track import on backend');
+                
+                // 作为备选方案，更新前端统计数据
+                statistics.import++;
+                statistics.total++;
+                updateStatisticsDisplay();
             });
         } catch (error) {
             console.error('导入Excel文件时出错:', error);

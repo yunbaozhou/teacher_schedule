@@ -23,6 +23,9 @@
         <div class="glassmorphism p-6 mb-8">
             <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                 <i class="fas fa-chart-bar mr-2 text-indigo-500"></i>使用统计
+                <button id="refresh-stats" class="ml-4 text-sm bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 px-2 rounded">
+                    <i class="fas fa-sync-alt"></i> 刷新
+                </button>
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
                 <div class="bg-purple-100 p-4 rounded-lg text-center">
@@ -388,12 +391,15 @@
     </footer> -->
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
+    
     <script>
         // Add statistics panel functionality
         document.addEventListener('DOMContentLoaded', function() {
             // Load initial statistics
             loadStatisticsPanel();
+            
+            // Bind refresh button
+            document.getElementById('refresh-stats').addEventListener('click', loadStatisticsPanel);
         });
         
         function loadStatisticsPanel() {
