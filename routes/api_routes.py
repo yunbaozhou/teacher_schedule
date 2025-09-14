@@ -7,6 +7,7 @@ from services.conflict_service import detect_conflicts
 # 从新的服务文件导入
 from services.excel_export_service import ExcelExportService
 from services.word_export_service import WordExportService
+from services.statistics_service import statistics_service
 
 # 创建服务实例
 excel_export_service = ExcelExportService()
@@ -50,6 +51,9 @@ def check_conflicts():
 def export_excel():
     """Export to Excel"""
     try:
+        # Track statistics
+        statistics_service.track_export("excel")
+        
         data = request.json
         output, filename = excel_export_service.create_excel_export(data)
         
@@ -72,6 +76,9 @@ def export_excel():
 def export_word():
     """Export to Word"""
     try:
+        # Track statistics
+        statistics_service.track_export("word")
+        
         data = request.json
         output, filename = word_export_service.create_word_export(data)
         
@@ -85,3 +92,34 @@ def export_word():
         return jsonify({"success": False, "message": str(e)}), 400
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 400
+
+def export_image():
+    """Track image export"""
+    # Track statistics
+    statistics_service.track_export("image")
+    return jsonify({"success": True})
+
+def print_schedule():
+    """Track print action"""
+    # Track statistics
+    statistics_service.track_export("print")
+    return jsonify({"success": True})
+
+def import_schedule():
+    """Track import action"""
+    # Track statistics
+    statistics_service.track_import()
+    return jsonify({"success": True})
+
+def get_statistics():
+    """Get usage statistics"""
+    stats = statistics_service.get_stats()
+    # Ensure all required fields exist
+    if "export_stats" not in stats:
+        stats["export_stats"] = {"excel": 0, "word": 0, "image": 0, "print": 0}
+    if "import_stats" not in stats:
+        stats["import_stats"] = {"total": 0}
+    if "usage_history" not in stats:
+        stats["usage_history"] = []
+        
+    return jsonify(stats)
