@@ -1,28 +1,56 @@
 body {
-    font-family: 'Noto Sans SC', sans-serif;
-    background-color: #f8fafc;
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 50%, #f5f7fa 100%);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .glassmorphism {
-    background: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    transition: all 0.3s ease;
+}
+
+.glassmorphism:hover {
+    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.3);
+    transform: translateY(-2px);
 }
 
 .course-card {
-    border-radius: 4px;
-    padding: 5px;
-    margin: 2px 0;
+    border-radius: 8px;
+    padding: 8px 6px;
+    margin: 3px 0;
     color: #333;
-    font-size: 12px;
+    font-size: 13px;
     cursor: pointer;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     position: relative;
+    transition: all 0.2s ease;
+    border-left: 4px solid transparent;
 }
 
 .course-card:hover {
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
 }
 
 .course-card .delete-btn {
@@ -30,66 +58,101 @@ body {
     top: 2px;
     right: 2px;
     display: none;
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.9);
     border: none;
     border-radius: 50%;
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     font-size: 10px;
     cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
 }
 
 .course-card:hover .delete-btn {
     display: block;
 }
 
+.course-card .delete-btn:hover {
+    background-color: #ff4757;
+    color: white;
+    transform: scale(1.1);
+}
+
 .file-upload {
     border: 2px dashed #cbd5e1;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
 }
 
 .file-upload:hover {
-    border-color: #94a3b8;
+    border-color: #6366f1;
+    background-color: #f0f4ff;
+    transform: translateY(-2px);
 }
 
 .file-upload.active {
     border-color: #6366f1;
-    background-color: #eef2ff;
+    background-color: #e0e7ff;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 
 .color-picker {
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     cursor: pointer;
     border: 2px solid transparent;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.color-picker:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .color-picker.selected-color {
-    border-color: #333;
-    transform: scale(1.1);
+    border-color: #1a202c;
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .selected-colors-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
+    gap: 12px;
+    margin-top: 12px;
 }
 
 .selected-color-item {
     display: flex;
     align-items: center;
-    background-color: #f0f0f0;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 12px;
+    background-color: #f8fafc;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.selected-color-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .remove-color {
-    margin-left: 5px;
+    margin-left: 8px;
     cursor: pointer;
-    color: #ff0000;
+    color: #ff4757;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.remove-color:hover {
+    transform: scale(1.2);
 }
 
 /* 修改模态框样式 */
@@ -101,107 +164,229 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.5);
     overflow-y: auto;
+    backdrop-filter: blur(4px);
 }
 
 .modal-content {
-    background-color: #fff;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
     margin: 5% auto;
     padding: 0;
     border: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
     width: 90%;
-    max-width: 600px;
+    max-width: 650px;
     max-height: 90vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    animation: modalOpen 0.3s ease-out;
+}
+
+@keyframes modalOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-60px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .modal-header {
-    padding: 20px;
-    border-bottom: 1px solid #e5e5e5;
+    padding: 24px;
+    border-bottom: 1px solid #e2e8f0;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: linear-gradient(120deg, #f8f9fa, #e9ecef);
 }
 
 .modal-body {
-    padding: 20px;
+    padding: 24px;
     overflow-y: auto;
-    max-height: calc(90vh - 140px);
+    max-height: calc(90vh - 160px);
 }
 
 .modal-footer {
-    padding: 20px;
-    border-top: 1px solid #e5e5e5;
+    padding: 24px;
+    border-top: 1px solid #e2e8f0;
     display: flex;
     justify-content: flex-end;
+    background: linear-gradient(120deg, #f8f9fa, #e9ecef);
 }
 
 .close-modal {
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 32px;
+    font-weight: lighter;
     cursor: pointer;
-    color: #aaa;
+    color: #a0aec0;
+    transition: all 0.2s ease;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 
 .close-modal:hover {
-    color: #000;
+    color: #718096;
+    background-color: #edf2f7;
+    transform: rotate(90deg);
 }
 
 .btn {
-    padding: 8px 16px;
-    border-radius: 4px;
+    padding: 10px 20px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 14px;
-    margin-left: 10px;
+    font-size: 15px;
+    margin-left: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {
-    background-color: #007bff;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
-    border: none;
 }
 
 .btn-danger {
-    background-color: #dc3545;
+    background: linear-gradient(135deg, #ff6b6b, #ff4757);
     color: white;
-    border: none;
 }
 
 .btn:hover {
     opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
 }
 
 .table-cell {
-    min-height: 60px;
+    min-height: 65px;
     cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .table-cell:hover {
     background-color: #f0f9ff;
+    transform: scale(1.01);
+    box-shadow: inset 0 0 0 1px #3182ce;
 }
 
 .time-period {
-    background-color: #e2e8f0;
+    background: linear-gradient(135deg, #e2e8f0, #cbd5e0);
     font-weight: bold;
     text-align: center;
+    font-size: 16px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #2d3748;
 }
 
+/* 课表标题样式 */
 .timetable-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-align: center;
+    background: transparent;
+    color: white;
     border: none;
     outline: none;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
     width: 100%;
-    height: 60px;
-    background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+    padding: 8px 16px;
+    border-radius: 0;
+    transition: all 0.3s ease;
 }
 
+.timetable-title::placeholder {
+    color: #e0e7ff;
+}
+
+.timetable-title:hover,
 .timetable-title:focus {
-    border-bottom: 2px solid #007bff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* 添加一些高级感的动画和过渡效果 */
+.schedule-selection-item {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 优化统计面板 */
+.stat-card {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 优化表格样式 */
+#course-table {
+    border-spacing: 0;
+    border-collapse: separate;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+#course-table th {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+#course-table td {
+    transition: all 0.2s ease;
+}
+
+/* 优化表头样式 */
+#course-table thead tr:first-child th {
+    background: linear-gradient(to right, #3b82f6, #4f46e5);
+    color: white;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+#course-table thead tr:not(:first-child) th {
+    background: linear-gradient(135deg, #edf2f7, #e2e8f0);
+    font-weight: 600;
+}
+
+/* 添加优雅的滚动条 */
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #c5c5c5;
+    border-radius: 10px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
 }

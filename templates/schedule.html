@@ -13,237 +13,245 @@
 </head>
 
 <body class="min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">课程表生成工具</h1>
-            <p class="text-gray-600">快速创建并导出个性化课程表</p>
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="text-center mb-10 relative">
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-40 h-40 bg-blue-300 opacity-20 rounded-full blur-3xl"></div>
+            </div>
+            <div class="relative z-10">
+                <h1 class="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-800 via-blue-600 to-blue-800 mb-4 tracking-wide">
+                    <i class="fas fa-calendar-alt mr-4"></i>课程表生成工具
+                </h1>
+                <div class="w-32 h-1 bg-gradient-to-r from-transparent via-blue-400 to-transparent mx-auto mb-4 rounded-full"></div>
+                <p class="text-blue-900 text-xl md:text-2xl font-light tracking-wider">快速创建并导出个性化课程表</p>
+            </div>
         </div>
 
         <!-- Statistics Panel -->
-        <div class="glassmorphism p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                <i class="fas fa-chart-bar mr-2 text-indigo-500"></i>使用统计
-                <button id="refresh-stats" class="ml-4 text-sm bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 px-2 rounded">
+        <div class="glassmorphism p-6 mb-8 rounded-xl">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-5 flex items-center">
+                <i class="fas fa-chart-bar mr-3 text-indigo-600"></i>使用统计
+                <button id="refresh-stats" class="ml-4 text-sm bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 text-gray-800 py-1.5 px-3 rounded-lg transition-all duration-300 shadow">
                     <i class="fas fa-sync-alt"></i> 刷新
                 </button>
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
-                <div class="bg-purple-100 p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold text-purple-800" id="image-count">0</div>
-                    <div class="text-sm text-purple-600">图片导出</div>
+                <div class="stat-card bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-xl text-center shadow">
+                    <div class="text-3xl font-bold text-purple-700" id="image-count">0</div>
+                    <div class="text-sm text-purple-600 mt-1">图片导出</div>
                 </div>
-                <div class="bg-blue-100 p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold text-blue-800" id="excel-count">0</div>
-                    <div class="text-sm text-blue-600">Excel导出</div>
+                <div class="stat-card bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-xl text-center shadow">
+                    <div class="text-3xl font-bold text-blue-700" id="excel-count">0</div>
+                    <div class="text-sm text-blue-600 mt-1">Excel导出</div>
                 </div>
-                <div class="bg-green-100 p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold text-green-800" id="word-count">0</div>
-                    <div class="text-sm text-green-600">Word导出</div>
+                <div class="stat-card bg-gradient-to-br from-green-50 to-green-100 p-5 rounded-xl text-center shadow">
+                    <div class="text-3xl font-bold text-green-700" id="word-count">0</div>
+                    <div class="text-sm text-green-600 mt-1">Word导出</div>
                 </div>
 
-                <div class="bg-yellow-100 p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold text-yellow-800" id="print-count">0</div>
-                    <div class="text-sm text-yellow-600">打印次数</div>
+                <div class="stat-card bg-gradient-to-br from-yellow-50 to-yellow-100 p-5 rounded-xl text-center shadow">
+                    <div class="text-3xl font-bold text-yellow-700" id="print-count">0</div>
+                    <div class="text-sm text-yellow-600 mt-1">打印次数</div>
                 </div>
-                <div class="bg-pink-100 p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold text-pink-800" id="import-count">0</div>
-                    <div class="text-sm text-pink-600">导入次数</div>
+                <div class="stat-card bg-gradient-to-br from-pink-50 to-pink-100 p-5 rounded-xl text-center shadow">
+                    <div class="text-3xl font-bold text-pink-700" id="import-count">0</div>
+                    <div class="text-sm text-pink-600 mt-1">导入次数</div>
                 </div>
-                <div class="bg-indigo-100 p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold text-indigo-800" id="total-count">0</div>
-                    <div class="text-sm text-indigo-600">总使用次数</div>
+                <div class="stat-card bg-gradient-to-br from-indigo-50 to-indigo-100 p-5 rounded-xl text-center shadow">
+                    <div class="text-3xl font-bold text-indigo-700" id="total-count">0</div>
+                    <div class="text-sm text-indigo-600 mt-1">总使用次数</div>
                 </div>
             </div>
         </div>
 
         <!-- 课程表区域 -->
-        <div class="glassmorphism p-6 mb-8">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                    <i class="fas fa-calendar-alt mr-2 text-indigo-500"></i>课程表
+        <div class="glassmorphism p-6 mb-8 rounded-xl">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <h2 class="text-2xl font-semibold text-gray-800 flex items-center">
+                    <i class="fas fa-calendar-alt mr-3 text-indigo-600"></i>课程表
                 </h2>
-                <div class="flex space-x-4">
+                <div class="flex flex-wrap gap-4">
                     <!-- 导入组 -->
-                    <div class="flex items-center">
-                        <span class="text-xs text-gray-500 mr-2">导入</span>
-                        <div class="flex items-center space-x-2 bg-gray-100 p-2 rounded-lg">
+                    <div class="flex items-center bg-gradient-to-r from-gray-100 to-gray-200 p-2 rounded-xl shadow">
+                        <span class="text-sm text-gray-700 mr-2 font-medium px-2">导入</span>
+                        <div class="flex items-center space-x-2">
                             <input type="file" id="import-file" accept=".xlsx" class="hidden" />
                             <button id="import-schedule"
-                                class="bg-indigo-600 text-white py-1 px-3 rounded-md text-sm hover:bg-indigo-700 transition-colors flex items-center">
-                                <i class="fas fa-file-import mr-1"></i>导入
+                                class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2 px-4 rounded-lg text-sm hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 flex items-center shadow-md">
+                                <i class="fas fa-file-import mr-2"></i>导入
                             </button>
                         </div>
                     </div>
 
                     <!-- 导出组 -->
-                    <div class="flex items-center">
-                        <span class="text-xs text-gray-500 mr-2">导出</span>
-                        <div class="flex items-center space-x-2 bg-gray-100 p-2 rounded-lg">
+                    <div class="flex items-center bg-gradient-to-r from-gray-100 to-gray-200 p-2 rounded-xl shadow">
+                        <span class="text-sm text-gray-700 mr-2 font-medium px-2">导出</span>
+                        <div class="flex flex-wrap items-center gap-2">
                             <button id="export-image"
-                                class="bg-pink-600 text-white py-1 px-3 rounded-md text-sm hover:bg-pink-700 transition-colors flex items-center">
-                                <i class="fas fa-file-image mr-1"></i>图片
+                                class="bg-gradient-to-r from-pink-600 to-rose-600 text-white py-2 px-4 rounded-lg text-sm hover:from-pink-700 hover:to-rose-700 transition-all duration-300 flex items-center shadow-md">
+                                <i class="fas fa-file-image mr-2"></i>图片
                             </button>
                             <button id="export-excel"
-                                class="bg-green-600 text-white py-1 px-3 rounded-md text-sm hover:bg-green-700 transition-colors flex items-center">
-                                <i class="fas fa-file-excel mr-1"></i>Excel
+                                class="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-2 px-4 rounded-lg text-sm hover:from-green-700 hover:to-emerald-700 transition-all duration-300 flex items-center shadow-md">
+                                <i class="fas fa-file-excel mr-2"></i>Excel
                             </button>
                             <button id="export-word"
-                                class="bg-blue-600 text-white py-1 px-3 rounded-md text-sm hover:bg-blue-700 transition-colors flex items-center">
-                                <i class="fas fa-file-word mr-1"></i>Word
+                                class="bg-gradient-to-r from-blue-600 to-cyan-600 text-white py-2 px-4 rounded-lg text-sm hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 flex items-center shadow-md">
+                                <i class="fas fa-file-word mr-2"></i>Word
                             </button>
                             <button id="print-schedule"
-                                class="bg-purple-600 text-white py-1 px-3 rounded-md text-sm hover:bg-purple-700 transition-colors flex items-center">
-                                <i class="fas fa-print mr-1"></i>打印
+                                class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-2 px-4 rounded-lg text-sm hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 flex items-center shadow-md">
+                                <i class="fas fa-print mr-2"></i>打印
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto rounded-lg shadow-lg">
                 <table class="w-full border-collapse" id="course-table">
                     <thead>
                         <!-- 课表标题行 -->
                         <tr>
-                            <th colspan="8" class="py-2 bg-gray-200 border border-gray-200">
+                            <th colspan="8" class="py-4 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-t-lg">
                                 <input type="text" id="timetable-title" class="timetable-title"
                                     placeholder="请输入课表名称（例如：初一(1)班课程表）" maxlength="30">
                             </th>
                         </tr>
-                        <tr>
-                            <th class="w-24 py-2 bg-gray-100 border border-gray-200">节次/星期</th>
-                            <th class="py-2 bg-gray-100 border border-gray-200">星期一</th>
-                            <th class="py-2 bg-gray-100 border border-gray-200">星期二</th>
-                            <th class="py-2 bg-gray-100 border border-gray-200">星期三</th>
-                            <th class="py-2 bg-gray-100 border border-gray-200">星期四</th>
-                            <th class="py-2 bg-gray-100 border border-gray-200">星期五</th>
-                            <th class="py-2 bg-gray-100 border border-gray-200">星期六</th>
-                            <th class="py-2 bg-gray-100 border border-gray-200">星期日</th>
+                        <tr class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+                            <th class="w-24 py-3 border border-blue-500">节次/星期</th>
+                            <th class="py-3 border border-blue-500">星期一</th>
+                            <th class="py-3 border border-blue-500">星期二</th>
+                            <th class="py-3 border border-blue-500">星期三</th>
+                            <th class="py-3 border border-blue-500">星期四</th>
+                            <th class="py-3 border border-blue-500">星期五</th>
+                            <th class="py-3 border border-blue-500">星期六</th>
+                            <th class="py-3 border border-blue-500">星期日</th>
                         </tr>
                     </thead>
                     <tbody>
                         <!-- 上午 -->
                         <tr>
-                            <td colspan="8" class="time-period py-2 bg-gray-200 border border-gray-300">上午</td>
+                            <td colspan="8" class="time-period py-3 bg-gradient-to-r from-gray-300 to-gray-400 border border-gray-400">上午</td>
                         </tr>
                         <tr>
-                            <td class="py-3 text-center bg-gray-50 border border-gray-200">第1节</td>
-                            <td class="border border-gray-200 table-cell" data-period="1" data-day="周一"></td>
-                            <td class="border border-gray-200 table-cell" data-period="1" data-day="周二"></td>
-                            <td class="border border-gray-200 table-cell" data-period="1" data-day="周三"></td>
-                            <td class="border border-gray-200 table-cell" data-period="1" data-day="周四"></td>
-                            <td class="border border-gray-200 table-cell" data-period="1" data-day="周五"></td>
-                            <td class="border border-gray-200 table-cell" data-period="1" data-day="周六"></td>
-                            <td class="border border-gray-200 table-cell" data-period="1" data-day="周日"></td>
+                            <td class="py-4 text-center bg-gray-100 border border-gray-300 font-medium">第1节</td>
+                            <td class="border border-gray-300 table-cell" data-period="1" data-day="周一"></td>
+                            <td class="border border-gray-300 table-cell" data-period="1" data-day="周二"></td>
+                            <td class="border border-gray-300 table-cell" data-period="1" data-day="周三"></td>
+                            <td class="border border-gray-300 table-cell" data-period="1" data-day="周四"></td>
+                            <td class="border border-gray-300 table-cell" data-period="1" data-day="周五"></td>
+                            <td class="border border-gray-300 table-cell" data-period="1" data-day="周六"></td>
+                            <td class="border border-gray-300 table-cell" data-period="1" data-day="周日"></td>
                         </tr>
                         <tr>
-                            <td class="py-3 text-center bg-gray-50 border border-gray-200">第2节</td>
-                            <td class="border border-gray-200 table-cell" data-period="2" data-day="周一"></td>
-                            <td class="border border-gray-200 table-cell" data-period="2" data-day="周二"></td>
-                            <td class="border border-gray-200 table-cell" data-period="2" data-day="周三"></td>
-                            <td class="border border-gray-200 table-cell" data-period="2" data-day="周四"></td>
-                            <td class="border border-gray-200 table-cell" data-period="2" data-day="周五"></td>
-                            <td class="border border-gray-200 table-cell" data-period="2" data-day="周六"></td>
-                            <td class="border border-gray-200 table-cell" data-period="2" data-day="周日"></td>
+                            <td class="py-4 text-center bg-gray-100 border border-gray-300 font-medium">第2节</td>
+                            <td class="border border-gray-300 table-cell" data-period="2" data-day="周一"></td>
+                            <td class="border border-gray-300 table-cell" data-period="2" data-day="周二"></td>
+                            <td class="border border-gray-300 table-cell" data-period="2" data-day="周三"></td>
+                            <td class="border border-gray-300 table-cell" data-period="2" data-day="周四"></td>
+                            <td class="border border-gray-300 table-cell" data-period="2" data-day="周五"></td>
+                            <td class="border border-gray-300 table-cell" data-period="2" data-day="周六"></td>
+                            <td class="border border-gray-300 table-cell" data-period="2" data-day="周日"></td>
                         </tr>
                         <tr>
-                            <td class="py-3 text-center bg-gray-50 border border-gray-200">第3节</td>
-                            <td class="border border-gray-200 table-cell" data-period="3" data-day="周一"></td>
-                            <td class="border border-gray-200 table-cell" data-period="3" data-day="周二"></td>
-                            <td class="border border-gray-200 table-cell" data-period="3" data-day="周三"></td>
-                            <td class="border border-gray-200 table-cell" data-period="3" data-day="周四"></td>
-                            <td class="border border-gray-200 table-cell" data-period="3" data-day="周五"></td>
-                            <td class="border border-gray-200 table-cell" data-period="3" data-day="周六"></td>
-                            <td class="border border-gray-200 table-cell" data-period="3" data-day="周日"></td>
+                            <td class="py-4 text-center bg-gray-100 border border-gray-300 font-medium">第3节</td>
+                            <td class="border border-gray-300 table-cell" data-period="3" data-day="周一"></td>
+                            <td class="border border-gray-300 table-cell" data-period="3" data-day="周二"></td>
+                            <td class="border border-gray-300 table-cell" data-period="3" data-day="周三"></td>
+                            <td class="border border-gray-300 table-cell" data-period="3" data-day="周四"></td>
+                            <td class="border border-gray-300 table-cell" data-period="3" data-day="周五"></td>
+                            <td class="border border-gray-300 table-cell" data-period="3" data-day="周六"></td>
+                            <td class="border border-gray-300 table-cell" data-period="3" data-day="周日"></td>
                         </tr>
                         <tr>
-                            <td class="py-3 text-center bg-gray-50 border border-gray-200">第4节</td>
-                            <td class="border border-gray-200 table-cell" data-period="4" data-day="周一"></td>
-                            <td class="border border-gray-200 table-cell" data-period="4" data-day="周二"></td>
-                            <td class="border border-gray-200 table-cell" data-period="4" data-day="周三"></td>
-                            <td class="border border-gray-200 table-cell" data-period="4" data-day="周四"></td>
-                            <td class="border border-gray-200 table-cell" data-period="4" data-day="周五"></td>
-                            <td class="border border-gray-200 table-cell" data-period="4" data-day="周六"></td>
-                            <td class="border border-gray-200 table-cell" data-period="4" data-day="周日"></td>
+                            <td class="py-4 text-center bg-gray-100 border border-gray-300 font-medium">第4节</td>
+                            <td class="border border-gray-300 table-cell" data-period="4" data-day="周一"></td>
+                            <td class="border border-gray-300 table-cell" data-period="4" data-day="周二"></td>
+                            <td class="border border-gray-300 table-cell" data-period="4" data-day="周三"></td>
+                            <td class="border border-gray-300 table-cell" data-period="4" data-day="周四"></td>
+                            <td class="border border-gray-300 table-cell" data-period="4" data-day="周五"></td>
+                            <td class="border border-gray-300 table-cell" data-period="4" data-day="周六"></td>
+                            <td class="border border-gray-300 table-cell" data-period="4" data-day="周日"></td>
                         </tr>
 
                         <!-- 下午 -->
                         <tr>
-                            <td colspan="8" class="time-period py-2 bg-gray-200 border border-gray-300">下午</td>
+                            <td colspan="8" class="time-period py-3 bg-gradient-to-r from-gray-300 to-gray-400 border border-gray-400">下午</td>
                         </tr>
                         <tr>
-                            <td class="py-3 text-center bg-gray-50 border border-gray-200">第5节</td>
-                            <td class="border border-gray-200 table-cell" data-period="5" data-day="周一"></td>
-                            <td class="border border-gray-200 table-cell" data-period="5" data-day="周二"></td>
-                            <td class="border border-gray-200 table-cell" data-period="5" data-day="周三"></td>
-                            <td class="border border-gray-200 table-cell" data-period="5" data-day="周四"></td>
-                            <td class="border border-gray-200 table-cell" data-period="5" data-day="周五"></td>
-                            <td class="border border-gray-200 table-cell" data-period="5" data-day="周六"></td>
-                            <td class="border border-gray-200 table-cell" data-period="5" data-day="周日"></td>
+                            <td class="py-4 text-center bg-gray-100 border border-gray-300 font-medium">第5节</td>
+                            <td class="border border-gray-300 table-cell" data-period="5" data-day="周一"></td>
+                            <td class="border border-gray-300 table-cell" data-period="5" data-day="周二"></td>
+                            <td class="border border-gray-300 table-cell" data-period="5" data-day="周三"></td>
+                            <td class="border border-gray-300 table-cell" data-period="5" data-day="周四"></td>
+                            <td class="border border-gray-300 table-cell" data-period="5" data-day="周五"></td>
+                            <td class="border border-gray-300 table-cell" data-period="5" data-day="周六"></td>
+                            <td class="border border-gray-300 table-cell" data-period="5" data-day="周日"></td>
                         </tr>
                         <tr>
-                            <td class="py-3 text-center bg-gray-50 border border-gray-200">第6节</td>
-                            <td class="border border-gray-200 table-cell" data-period="6" data-day="周一"></td>
-                            <td class="border border-gray-200 table-cell" data-period="6" data-day="周二"></td>
-                            <td class="border border-gray-200 table-cell" data-period="6" data-day="周三"></td>
-                            <td class="border border-gray-200 table-cell" data-period="6" data-day="周四"></td>
-                            <td class="border border-gray-200 table-cell" data-period="6" data-day="周五"></td>
-                            <td class="border border-gray-200 table-cell" data-period="6" data-day="周六"></td>
-                            <td class="border border-gray-200 table-cell" data-period="6" data-day="周日"></td>
+                            <td class="py-4 text-center bg-gray-100 border border-gray-300 font-medium">第6节</td>
+                            <td class="border border-gray-300 table-cell" data-period="6" data-day="周一"></td>
+                            <td class="border border-gray-300 table-cell" data-period="6" data-day="周二"></td>
+                            <td class="border border-gray-300 table-cell" data-period="6" data-day="周三"></td>
+                            <td class="border border-gray-300 table-cell" data-period="6" data-day="周四"></td>
+                            <td class="border border-gray-300 table-cell" data-period="6" data-day="周五"></td>
+                            <td class="border border-gray-300 table-cell" data-period="6" data-day="周六"></td>
+                            <td class="border border-gray-300 table-cell" data-period="6" data-day="周日"></td>
                         </tr>
                         <tr>
-                            <td class="py-3 text-center bg-gray-50 border border-gray-200">第7节</td>
-                            <td class="border border-gray-200 table-cell" data-period="7" data-day="周一"></td>
-                            <td class="border border-gray-200 table-cell" data-period="7" data-day="周二"></td>
-                            <td class="border border-gray-200 table-cell" data-period="7" data-day="周三"></td>
-                            <td class="border border-gray-200 table-cell" data-period="7" data-day="周四"></td>
-                            <td class="border border-gray-200 table-cell" data-period="7" data-day="周五"></td>
-                            <td class="border border-gray-200 table-cell" data-period="7" data-day="周六"></td>
-                            <td class="border border-gray-200 table-cell" data-period="7" data-day="周日"></td>
+                            <td class="py-4 text-center bg-gray-100 border border-gray-300 font-medium">第7节</td>
+                            <td class="border border-gray-300 table-cell" data-period="7" data-day="周一"></td>
+                            <td class="border border-gray-300 table-cell" data-period="7" data-day="周二"></td>
+                            <td class="border border-gray-300 table-cell" data-period="7" data-day="周三"></td>
+                            <td class="border border-gray-300 table-cell" data-period="7" data-day="周四"></td>
+                            <td class="border border-gray-300 table-cell" data-period="7" data-day="周五"></td>
+                            <td class="border border-gray-300 table-cell" data-period="7" data-day="周六"></td>
+                            <td class="border border-gray-300 table-cell" data-period="7" data-day="周日"></td>
                         </tr>
                         <tr>
-                            <td class="py-3 text-center bg-gray-50 border border-gray-200">第8节</td>
-                            <td class="border border-gray-200 table-cell" data-period="8" data-day="周一"></td>
-                            <td class="border border-gray-200 table-cell" data-period="8" data-day="周二"></td>
-                            <td class="border border-gray-200 table-cell" data-period="8" data-day="周三"></td>
-                            <td class="border border-gray-200 table-cell" data-period="8" data-day="周四"></td>
-                            <td class="border border-gray-200 table-cell" data-period="8" data-day="周五"></td>
-                            <td class="border border-gray-200 table-cell" data-period="8" data-day="周六"></td>
-                            <td class="border border-gray-200 table-cell" data-period="8" data-day="周日"></td>
+                            <td class="py-4 text-center bg-gray-100 border border-gray-300 font-medium">第8节</td>
+                            <td class="border border-gray-300 table-cell" data-period="8" data-day="周一"></td>
+                            <td class="border border-gray-300 table-cell" data-period="8" data-day="周二"></td>
+                            <td class="border border-gray-300 table-cell" data-period="8" data-day="周三"></td>
+                            <td class="border border-gray-300 table-cell" data-period="8" data-day="周四"></td>
+                            <td class="border border-gray-300 table-cell" data-period="8" data-day="周五"></td>
+                            <td class="border border-gray-300 table-cell" data-period="8" data-day="周六"></td>
+                            <td class="border border-gray-300 table-cell" data-period="8" data-day="周日"></td>
                         </tr>
 
                         <!-- 晚自习 -->
                         <tr>
-                            <td colspan="8" class="time-period py-2 bg-gray-200 border border-gray-300">晚自习</td>
+                            <td colspan="8" class="time-period py-3 bg-gradient-to-r from-gray-300 to-gray-400 border border-gray-400">晚自习</td>
                         </tr>
                         <tr>
-                            <td class="py-3 text-center bg-gray-50 border border-gray-200">第9节</td>
-                            <td class="border border-gray-200 table-cell" data-period="9" data-day="周一"></td>
-                            <td class="border border-gray-200 table-cell" data-period="9" data-day="周二"></td>
-                            <td class="border border-gray-200 table-cell" data-period="9" data-day="周三"></td>
-                            <td class="border border-gray-200 table-cell" data-period="9" data-day="周四"></td>
-                            <td class="border border-gray-200 table-cell" data-period="9" data-day="周五"></td>
-                            <td class="border border-gray-200 table-cell" data-period="9" data-day="周六"></td>
-                            <td class="border border-gray-200 table-cell" data-period="9" data-day="周日"></td>
+                            <td class="py-4 text-center bg-gray-100 border border-gray-300 font-medium">第9节</td>
+                            <td class="border border-gray-300 table-cell" data-period="9" data-day="周一"></td>
+                            <td class="border border-gray-300 table-cell" data-period="9" data-day="周二"></td>
+                            <td class="border border-gray-300 table-cell" data-period="9" data-day="周三"></td>
+                            <td class="border border-gray-300 table-cell" data-period="9" data-day="周四"></td>
+                            <td class="border border-gray-300 table-cell" data-period="9" data-day="周五"></td>
+                            <td class="border border-gray-300 table-cell" data-period="9" data-day="周六"></td>
+                            <td class="border border-gray-300 table-cell" data-period="9" data-day="周日"></td>
                         </tr>
                         <tr>
-                            <td class="py-3 text-center bg-gray-50 border border-gray-200">第10节</td>
-                            <td class="border border-gray-200 table-cell" data-period="10" data-day="周一"></td>
-                            <td class="border border-gray-200 table-cell" data-period="10" data-day="周二"></td>
-                            <td class="border border-gray-200 table-cell" data-period="10" data-day="周三"></td>
-                            <td class="border border-gray-200 table-cell" data-period="10" data-day="周四"></td>
-                            <td class="border border-gray-200 table-cell" data-period="10" data-day="周五"></td>
-                            <td class="border border-gray-200 table-cell" data-period="10" data-day="周六"></td>
-                            <td class="border border-gray-200 table-cell" data-period="10" data-day="周日"></td>
+                            <td class="py-4 text-center bg-gray-100 border border-gray-300 font-medium">第10节</td>
+                            <td class="border border-gray-300 table-cell" data-period="10" data-day="周一"></td>
+                            <td class="border border-gray-300 table-cell" data-period="10" data-day="周二"></td>
+                            <td class="border border-gray-300 table-cell" data-period="10" data-day="周三"></td>
+                            <td class="border border-gray-300 table-cell" data-period="10" data-day="周四"></td>
+                            <td class="border border-gray-300 table-cell" data-period="10" data-day="周五"></td>
+                            <td class="border border-gray-300 table-cell" data-period="10" data-day="周六"></td>
+                            <td class="border border-gray-300 table-cell" data-period="10" data-day="周日"></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <!-- 冲突信息显示区域 -->
-            <div id="conflict-alert" class="hidden mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
-                <h3 class="font-bold">检测到冲突：</h3>
-                <ul id="conflict-list" class="list-disc pl-5 mt-2"></ul>
+            <div id="conflict-alert" class="hidden mt-5 p-4 bg-gradient-to-r from-red-50 to-red-100 text-red-700 rounded-xl shadow">
+                <h3 class="font-bold text-lg flex items-center"><i class="fas fa-exclamation-triangle mr-2"></i>检测到冲突：</h3>
+                <ul id="conflict-list" class="list-disc pl-7 mt-2 space-y-1"></ul>
             </div>
         </div>
     </div>
@@ -252,31 +260,31 @@
     <div id="edit-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modal-title">编辑课程</h2>
+                <h2 id="modal-title" class="text-2xl font-bold text-gray-800">编辑课程</h2>
                 <span class="close-modal">&times;</span>
             </div>
             <div class="modal-body">
-                <div class="space-y-4">
+                <div class="space-y-5">
                     <input type="hidden" id="edit-course-index">
                     <input type="hidden" id="edit-mode"> <!-- "add" or "edit" -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">课程名称 <span
-                                class="text-red-500"></span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">课程名称 <span
+                                class="text-red-500">*</span></label>
                         <input id="edit-course-name" type="text"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
                             placeholder="请输入课程名称，如：数学" maxlength="20">
                     </div>
 
                     <!-- 星期和节次选择区域 -->
                     <div id="schedule-selections">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">星期和节次 <span
+                        <label class="block text-sm font-medium text-gray-700 mb-2">星期和节次 <span
                                 class="text-red-500">*</span></label>
                         <div id="schedule-selection-list">
                             <!-- 默认添加一个选择项 -->
-                            <div class="schedule-selection-item grid grid-cols-12 gap-2 mb-2">
+                            <div class="schedule-selection-item grid grid-cols-12 gap-3 mb-3">
                                 <div class="col-span-5">
                                     <select
-                                        class="schedule-day w-full px-2 py-1 border border-gray-300 rounded-md text-sm">
+                                        class="schedule-day w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                         <option value="周一">星期一</option>
                                         <option value="周二">星期二</option>
                                         <option value="周三">星期三</option>
@@ -288,7 +296,7 @@
                                 </div>
                                 <div class="col-span-5">
                                     <select multiple
-                                        class="periods-select w-full px-2 py-1 border border-gray-300 rounded-md text-sm h-24">
+                                        class="periods-select w-full px-3 py-2 border border-gray-300 rounded-lg text-sm h-28 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                         <option value="1">第1节</option>
                                         <option value="2">第2节</option>
                                         <option value="3">第3节</option>
@@ -302,64 +310,64 @@
                                     </select>
                                 </div>
                                 <div class="col-span-2 flex items-center">
-                                    <button type="button" class="remove-schedule-item text-red-500 hover:text-red-700">
-                                        <i class="fas fa-trash"></i>
+                                    <button type="button" class="remove-schedule-item text-red-500 hover:text-red-700 transition-colors">
+                                        <i class="fas fa-trash text-xl"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <button type="button" id="add-schedule-item"
-                            class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm">
+                            class="mt-3 text-indigo-600 hover:text-indigo-800 text-sm font-medium transition-colors">
                             <i class="fas fa-plus mr-1"></i>添加星期和节次
                         </button>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">教师</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">教师</label>
                             <input id="edit-course-teacher" type="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
                                 placeholder="请输入教师姓名，如：张老师" maxlength="10">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">地点</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">地点</label>
                             <input id="edit-course-location" type="text"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
                                 placeholder="请输入上课地点，如：教学楼A101" maxlength="20">
                         </div>
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-5">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="edit-course-notes">
                             备注
                         </label>
                         <input type="text" id="edit-course-notes"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm"
                             placeholder="请输入备注信息，如：线上课程" maxlength="30">
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-5">
                         <label class="block text-gray-700 text-sm font-bold mb-2">
                             时间段（可选）
                         </label>
-                        <div class="flex items-center space-x-2">
+                        <div class="flex items-center space-x-3">
                             <select id="edit-course-start-time"
-                                class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm">
                                 <option value="">选择开始时间</option>
                             </select>
-                            <span>~</span>
+                            <span class="text-gray-500">~</span>
                             <select id="edit-course-end-time"
-                                class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm">
                                 <option value="">选择结束时间</option>
                             </select>
                         </div>
-                        <p class="text-gray-500 text-xs mt-1">时间段以5分钟为最小单位（可选，不填则不显示）</p>
+                        <p class="text-gray-500 text-xs mt-2">时间段以5分钟为最小单位（可选，不填则不显示）</p>
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-5">
                         <label class="block text-gray-700 text-sm font-bold mb-2">
                             课程颜色
                         </label>
-                        <div class="flex flex-wrap gap-2">
+                        <div class="flex flex-wrap gap-3">
                             <div class="color-picker bg-pink-200" data-color="255,204,204"></div>
                             <div class="color-picker bg-blue-200" data-color="204,255,255"></div>
                             <div class="color-picker bg-green-200" data-color="204,255,204"></div>
@@ -372,15 +380,15 @@
                             <div class="color-picker bg-lime-200" data-color="144,238,144"></div>
                             <div class="color-picker bg-sky-200" data-color="173,216,230"></div>
                             <div class="color-picker bg-teal-200" data-color="176,224,230"></div>
-                            <input id="custom-color" type="color" class="w-10 h-8 cursor-pointer">
+                            <input id="custom-color" type="color" class="w-10 h-10 cursor-pointer rounded-lg border-0">
                             <input type="hidden" id="selected-color">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button id="delete-course-btn" class="btn btn-danger hidden mr-2">删除课程</button>
-                <button id="save-course-btn" class="btn btn-primary">保存课程</button>
+                <button id="delete-course-btn" class="btn btn-danger hidden mr-3 px-5 py-2.5">删除课程</button>
+                <button id="save-course-btn" class="btn btn-primary px-5 py-2.5">保存课程</button>
             </div>
         </div>
     </div>
