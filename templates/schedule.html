@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body class="min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <div class="text-center mb-8">
@@ -23,6 +25,10 @@
                 <i class="fas fa-chart-bar mr-2 text-indigo-500"></i>使用统计
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="bg-purple-100 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-purple-800" id="image-count">0</div>
+                    <div class="text-sm text-purple-600">图片导出</div>
+                </div>
                 <div class="bg-blue-100 p-4 rounded-lg text-center">
                     <div class="text-2xl font-bold text-blue-800" id="excel-count">0</div>
                     <div class="text-sm text-blue-600">Excel导出</div>
@@ -31,10 +37,7 @@
                     <div class="text-2xl font-bold text-green-800" id="word-count">0</div>
                     <div class="text-sm text-green-600">Word导出</div>
                 </div>
-                <div class="bg-purple-100 p-4 rounded-lg text-center">
-                    <div class="text-2xl font-bold text-purple-800" id="image-count">0</div>
-                    <div class="text-sm text-purple-600">图片导出</div>
-                </div>
+
                 <div class="bg-yellow-100 p-4 rounded-lg text-center">
                     <div class="text-2xl font-bold text-yellow-800" id="print-count">0</div>
                     <div class="text-sm text-yellow-600">打印次数</div>
@@ -58,26 +61,31 @@
                         <span class="text-xs text-gray-500 mr-2">导入</span>
                         <div class="flex items-center space-x-2 bg-gray-100 p-2 rounded-lg">
                             <input type="file" id="import-file" accept=".xlsx" class="hidden" />
-                            <button id="import-schedule" class="bg-indigo-600 text-white py-1 px-3 rounded-md text-sm hover:bg-indigo-700 transition-colors flex items-center">
+                            <button id="import-schedule"
+                                class="bg-indigo-600 text-white py-1 px-3 rounded-md text-sm hover:bg-indigo-700 transition-colors flex items-center">
                                 <i class="fas fa-file-import mr-1"></i>导入
                             </button>
                         </div>
                     </div>
-                    
+
                     <!-- 导出组 -->
                     <div class="flex items-center">
                         <span class="text-xs text-gray-500 mr-2">导出</span>
                         <div class="flex items-center space-x-2 bg-gray-100 p-2 rounded-lg">
-                            <button id="export-image" class="bg-pink-600 text-white py-1 px-3 rounded-md text-sm hover:bg-pink-700 transition-colors flex items-center">
+                            <button id="export-image"
+                                class="bg-pink-600 text-white py-1 px-3 rounded-md text-sm hover:bg-pink-700 transition-colors flex items-center">
                                 <i class="fas fa-file-image mr-1"></i>图片
                             </button>
-                            <button id="export-excel" class="bg-green-600 text-white py-1 px-3 rounded-md text-sm hover:bg-green-700 transition-colors flex items-center">
+                            <button id="export-excel"
+                                class="bg-green-600 text-white py-1 px-3 rounded-md text-sm hover:bg-green-700 transition-colors flex items-center">
                                 <i class="fas fa-file-excel mr-1"></i>Excel
                             </button>
-                            <button id="export-word" class="bg-blue-600 text-white py-1 px-3 rounded-md text-sm hover:bg-blue-700 transition-colors flex items-center">
+                            <button id="export-word"
+                                class="bg-blue-600 text-white py-1 px-3 rounded-md text-sm hover:bg-blue-700 transition-colors flex items-center">
                                 <i class="fas fa-file-word mr-1"></i>Word
                             </button>
-                            <button id="print-schedule" class="bg-purple-600 text-white py-1 px-3 rounded-md text-sm hover:bg-purple-700 transition-colors flex items-center">
+                            <button id="print-schedule"
+                                class="bg-purple-600 text-white py-1 px-3 rounded-md text-sm hover:bg-purple-700 transition-colors flex items-center">
                                 <i class="fas fa-print mr-1"></i>打印
                             </button>
                         </div>
@@ -91,7 +99,8 @@
                         <!-- 课表标题行 -->
                         <tr>
                             <th colspan="8" class="py-2 bg-gray-200 border border-gray-200">
-                                <input type="text" id="timetable-title" class="timetable-title" placeholder="请输入课表名称（例如：初一(1)班课程表）" maxlength="30">
+                                <input type="text" id="timetable-title" class="timetable-title"
+                                    placeholder="请输入课表名称（例如：初一(1)班课程表）" maxlength="30">
                             </th>
                         </tr>
                         <tr>
@@ -150,7 +159,7 @@
                             <td class="border border-gray-200 table-cell" data-period="4" data-day="周六"></td>
                             <td class="border border-gray-200 table-cell" data-period="4" data-day="周日"></td>
                         </tr>
-                        
+
                         <!-- 下午 -->
                         <tr>
                             <td colspan="8" class="time-period py-2 bg-gray-200 border border-gray-300">下午</td>
@@ -195,7 +204,7 @@
                             <td class="border border-gray-200 table-cell" data-period="8" data-day="周六"></td>
                             <td class="border border-gray-200 table-cell" data-period="8" data-day="周日"></td>
                         </tr>
-                        
+
                         <!-- 晚自习 -->
                         <tr>
                             <td colspan="8" class="time-period py-2 bg-gray-200 border border-gray-300">晚自习</td>
@@ -223,7 +232,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <!-- 冲突信息显示区域 -->
             <div id="conflict-alert" class="hidden mt-4 p-3 bg-red-100 text-red-700 rounded-lg">
                 <h3 class="font-bold">检测到冲突：</h3>
@@ -244,18 +253,23 @@
                     <input type="hidden" id="edit-course-index">
                     <input type="hidden" id="edit-mode"> <!-- "add" or "edit" -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">课程名称 <span class="text-red-500"></span></label>
-                        <input id="edit-course-name" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="请输入课程名称，如：数学" maxlength="20">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">课程名称 <span
+                                class="text-red-500"></span></label>
+                        <input id="edit-course-name" type="text"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="请输入课程名称，如：数学" maxlength="20">
                     </div>
-                    
+
                     <!-- 星期和节次选择区域 -->
                     <div id="schedule-selections">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">星期和节次 <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">星期和节次 <span
+                                class="text-red-500">*</span></label>
                         <div id="schedule-selection-list">
                             <!-- 默认添加一个选择项 -->
                             <div class="schedule-selection-item grid grid-cols-12 gap-2 mb-2">
                                 <div class="col-span-5">
-                                    <select class="schedule-day w-full px-2 py-1 border border-gray-300 rounded-md text-sm">
+                                    <select
+                                        class="schedule-day w-full px-2 py-1 border border-gray-300 rounded-md text-sm">
                                         <option value="周一">星期一</option>
                                         <option value="周二">星期二</option>
                                         <option value="周三">星期三</option>
@@ -266,7 +280,8 @@
                                     </select>
                                 </div>
                                 <div class="col-span-5">
-                                    <select multiple class="periods-select w-full px-2 py-1 border border-gray-300 rounded-md text-sm h-24">
+                                    <select multiple
+                                        class="periods-select w-full px-2 py-1 border border-gray-300 rounded-md text-sm h-24">
                                         <option value="1">第1节</option>
                                         <option value="2">第2节</option>
                                         <option value="3">第3节</option>
@@ -286,44 +301,53 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" id="add-schedule-item" class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm">
+                        <button type="button" id="add-schedule-item"
+                            class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm">
                             <i class="fas fa-plus mr-1"></i>添加星期和节次
                         </button>
                     </div>
-                    
+
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">教师</label>
-                            <input id="edit-course-teacher" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="请输入教师姓名，如：张老师" maxlength="10">
+                            <input id="edit-course-teacher" type="text"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="请输入教师姓名，如：张老师" maxlength="10">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">地点</label>
-                            <input id="edit-course-location" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="请输入上课地点，如：教学楼A101" maxlength="20">
+                            <input id="edit-course-location" type="text"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="请输入上课地点，如：教学楼A101" maxlength="20">
                         </div>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="edit-course-notes">
                             备注
                         </label>
-                        <input type="text" id="edit-course-notes" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="请输入备注信息，如：线上课程" maxlength="30">
+                        <input type="text" id="edit-course-notes"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            placeholder="请输入备注信息，如：线上课程" maxlength="30">
                     </div>
-                    
+
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2">
                             时间段（可选）
                         </label>
                         <div class="flex items-center space-x-2">
-                            <select id="edit-course-start-time" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select id="edit-course-start-time"
+                                class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="">选择开始时间</option>
                             </select>
                             <span>~</span>
-                            <select id="edit-course-end-time" class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <select id="edit-course-end-time"
+                                class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 <option value="">选择结束时间</option>
                             </select>
                         </div>
                         <p class="text-gray-500 text-xs mt-1">时间段以5分钟为最小单位（可选，不填则不显示）</p>
                     </div>
-                    
+
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2">
                             课程颜色
@@ -360,14 +384,14 @@
     </footer> -->
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    
+
     <script>
         // Add statistics panel functionality
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Load initial statistics
             loadStatisticsPanel();
         });
-        
+
         function loadStatisticsPanel() {
             fetch('/api/statistics')
                 .then(response => response.json())
@@ -384,4 +408,5 @@
         }
     </script>
 </body>
+
 </html>
