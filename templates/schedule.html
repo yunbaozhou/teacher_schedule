@@ -17,6 +17,35 @@
             <p class="text-gray-600">快速创建并导出个性化课程表</p>
         </div>
 
+        <!-- Statistics Panel -->
+        <div class="glassmorphism p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-chart-bar mr-2 text-indigo-500"></i>使用统计
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="bg-blue-100 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-blue-800" id="excel-count">0</div>
+                    <div class="text-sm text-blue-600">Excel导出</div>
+                </div>
+                <div class="bg-green-100 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-green-800" id="word-count">0</div>
+                    <div class="text-sm text-green-600">Word导出</div>
+                </div>
+                <div class="bg-purple-100 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-purple-800" id="image-count">0</div>
+                    <div class="text-sm text-purple-600">图片导出</div>
+                </div>
+                <div class="bg-yellow-100 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-yellow-800" id="print-count">0</div>
+                    <div class="text-sm text-yellow-600">打印次数</div>
+                </div>
+                <div class="bg-indigo-100 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-indigo-800" id="total-count">0</div>
+                    <div class="text-sm text-indigo-600">总使用次数</div>
+                </div>
+            </div>
+        </div>
+
         <!-- 课程表区域 -->
         <div class="glassmorphism p-6 mb-8">
             <div class="flex justify-between items-center mb-6">
@@ -331,5 +360,28 @@
     </footer> -->
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <script>
+        // Add statistics panel functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load initial statistics
+            loadStatisticsPanel();
+        });
+        
+        function loadStatisticsPanel() {
+            fetch('/api/statistics')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('excel-count').textContent = data.export_stats.excel || 0;
+                    document.getElementById('word-count').textContent = data.export_stats.word || 0;
+                    document.getElementById('image-count').textContent = data.export_stats.image || 0;
+                    document.getElementById('print-count').textContent = data.export_stats.print || 0;
+                    document.getElementById('total-count').textContent = data.total_usage || 0;
+                })
+                .catch(error => {
+                    console.error('Error loading statistics:', error);
+                });
+        }
+    </script>
 </body>
 </html>

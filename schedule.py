@@ -3,7 +3,7 @@ from flask import Flask
 from config import FLASK_CONFIG
 from models import courses_data_store
 from routes.main_routes import index
-from routes.api_routes import get_courses, add_course_endpoint, check_conflicts, export_excel, export_word
+from routes.api_routes import get_courses, add_course_endpoint, check_conflicts, export_excel, export_word, get_statistics, export_image, print_schedule, import_schedule
 
 app = Flask(__name__, 
             static_folder=FLASK_CONFIG['static_folder'], 
@@ -34,6 +34,22 @@ def export_excel_route():
 @app.route('/api/export/word', methods=['POST'])
 def export_word_route():
     return export_word()
+
+@app.route('/api/export/image', methods=['POST'])
+def export_image_route():
+    return export_image()
+
+@app.route('/api/export/print', methods=['POST'])
+def print_schedule_route():
+    return print_schedule()
+
+@app.route('/api/import', methods=['POST'])
+def import_schedule_route():
+    return import_schedule()
+
+@app.route('/api/statistics', methods=['GET'])
+def get_statistics_route():
+    return get_statistics()
 
 # Start Flask application
 if __name__ == '__main__':

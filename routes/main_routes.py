@@ -1,5 +1,6 @@
 from flask import render_template
+from models import courses_data_store
 
 def index():
-    """Main route, return frontend page"""
-    return render_template('schedule.html')
+    """Main page"""
+    return render_template('schedule.html', courses=courses_data_store)

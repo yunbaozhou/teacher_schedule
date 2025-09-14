@@ -1,0 +1,103 @@
+{
+  "export_stats": {
+    "excel": 9,
+    "word": 3,
+    "image": 6,
+    "print": 3
+  },
+  "import_stats": {
+    "total": 1
+  },
+  "usage_history": [
+    {
+      "action": "export_excel",
+      "timestamp": "2025-09-14T09:37:23.488444"
+    },
+    {
+      "action": "export_excel",
+      "timestamp": "2025-09-14T09:38:25.316937"
+    },
+    {
+      "action": "export_image",
+      "timestamp": "2025-09-14T09:40:31.101467"
+    },
+    {
+      "action": "export_excel",
+      "timestamp": "2025-09-14T09:40:36.400742"
+    },
+    {
+      "action": "export_word",
+      "timestamp": "2025-09-14T09:40:40.750464"
+    },
+    {
+      "action": "export_print",
+      "timestamp": "2025-09-14T09:40:44.842705"
+    },
+    {
+      "action": "export_image",
+      "timestamp": "2025-09-14T09:40:55.903111"
+    },
+    {
+      "action": "export_word",
+      "timestamp": "2025-09-14T09:41:04.520372"
+    },
+    {
+      "action": "export_excel",
+      "timestamp": "2025-09-14T09:41:10.724549"
+    },
+    {
+      "action": "export_excel",
+      "timestamp": "2025-09-14T09:41:20.754828"
+    },
+    {
+      "action": "export_image",
+      "timestamp": "2025-09-14T09:48:08.668667"
+    },
+    {
+      "action": "export_image",
+      "timestamp": "2025-09-14T09:48:14.003002"
+    },
+    {
+      "action": "export_print",
+      "timestamp": "2025-09-14T09:48:31.642620"
+    },
+    {
+      "action": "import",
+      "timestamp": "2025-09-14T09:49:57.623394"
+    },
+    {
+      "action": "export_image",
+      "timestamp": "2025-09-14T09:50:09.079707"
+    },
+    {
+      "action": "export_image",
+      "timestamp": "2025-09-14T09:50:12.016568"
+    },
+    {
+      "action": "export_excel",
+      "timestamp": "2025-09-14T09:50:14.060205"
+    },
+    {
+      "action": "export_word",
+      "timestamp": "2025-09-14T09:50:15.316689"
+    },
+    {
+      "action": "export_print",
+      "timestamp": "2025-09-14T09:50:17.009631"
+    },
+    {
+      "action": "export_excel",
+      "timestamp": "2025-09-14T09:50:21.385115"
+    },
+    {
+      "action": "export_excel",
+      "timestamp": "2025-09-14T09:50:22.237911"
+    },
+    {
+      "action": "export_excel",
+      "timestamp": "2025-09-14T09:50:22.598590"
+    }
+  ],
+  "last_updated": "2025-09-14T09:50:22.598590",
+  "total_usage": 13
+}

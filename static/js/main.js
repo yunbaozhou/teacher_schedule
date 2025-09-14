@@ -2,6 +2,51 @@
 let courseData = [];
 let userSelectedColors = {};
 
+// 统计数据
+let statistics = {
+    export: {
+        excel: 0,
+        word: 0,
+        image: 0,
+        print: 0
+    },
+    import: 0,
+    total: 0
+};
+
+// 加载统计数据
+function loadStatistics() {
+    fetch('/api/statistics')
+        .then(response => response.json())
+        .then(data => {
+            statistics.export.excel = data.export_stats.excel || 0;
+            statistics.export.word = data.export_stats.word || 0;
+            statistics.export.image = data.export_stats.image || 0;
+            statistics.export.print = data.export_stats.print || 0;
+            statistics.import = data.import_stats.total || 0;
+            statistics.total = data.total_usage || 0;
+            updateStatisticsDisplay();
+        })
+        .catch(error => {
+            console.error('Error loading statistics:', error);
+        });
+}
+
+// 更新统计数据显示
+function updateStatisticsDisplay() {
+    document.getElementById('excel-count').textContent = statistics.export.excel;
+    document.getElementById('word-count').textContent = statistics.export.word;
+    document.getElementById('image-count').textContent = statistics.export.image;
+    document.getElementById('print-count').textContent = statistics.export.print;
+    document.getElementById('total-count').textContent = statistics.total;
+}
+
+// 保存统计数据
+function saveStatistics() {
+    // In a real implementation, we would send this to the backend
+    // For now, we're just keeping it in memory
+}
+
 // 生成时间选项（5分钟为间隔）
 function generateTimeOptions() {
     const startSelect = document.getElementById('edit-course-start-time');
@@ -184,6 +229,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 绑定复制和粘贴按钮事件
     document.getElementById('copy-course').addEventListener('click', copyCourse);
     document.getElementById('paste-course').addEventListener('click', pasteCourse);
+    
+    // 加载统计数据
+    loadStatistics();
 });
 
 // 初始化颜色选择器
@@ -926,6 +974,11 @@ function exportToExcel() {
         return;
     }
     
+    // 更新统计数据
+    statistics.export.excel++;
+    statistics.total++;
+    updateStatisticsDisplay();
+    
     // 获取课表标题
     const timetableTitle = document.getElementById('timetable-title').value || '课程表';
     
@@ -968,6 +1021,11 @@ function exportToWord() {
         alert('请先添加课程数据');
         return;
     }
+    
+    // 更新统计数据
+    statistics.export.word++;
+    statistics.total++;
+    updateStatisticsDisplay();
     
     // 获取课表标题
     const timetableTitle = document.getElementById('timetable-title').value || '课程表';
@@ -1012,6 +1070,23 @@ function exportToImage() {
         alert('请先添加课程数据');
         return;
     }
+    
+    // 更新统计数据
+    statistics.export.image++;
+    statistics.total++;
+    updateStatisticsDisplay();
+    
+    // 发送请求到后端以跟踪统计数据
+    fetch('/api/export/image', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+    }).catch(error => {
+        // 忽略错误，因为我们主要关心前端统计
+        console.log('Failed to track image export on backend');
+    });
     
     // 显示加载状态
     const originalText = document.getElementById('export-image').innerHTML;
@@ -1134,6 +1209,23 @@ function exportToImage() {
 
 // 打印课程表
 function printSchedule() {
+    // 发送请求到后端以跟踪统计数据
+    fetch('/api/export/print', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+    }).catch(error => {
+        // 忽略错误，因为我们主要关心前端统计
+        console.log('Failed to track print action on backend');
+    });
+    
+    // 更新统计数据
+    statistics.export.print++;
+    statistics.total++;
+    updateStatisticsDisplay();
+    
     // 获取课表标题
     const timetableTitle = document.getElementById('timetable-title').value || '课程表';
     
@@ -1263,6 +1355,23 @@ function importFromExcel(event) {
             
             // 清空文件选择
             event.target.value = '';
+            
+            // 更新统计数据
+            statistics.import++;
+            statistics.total++;
+            updateStatisticsDisplay();
+            
+            // 发送请求到后端以跟踪统计数据
+            fetch('/api/import', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            }).catch(error => {
+                // 忽略错误，因为我们主要关心前端统计
+                console.log('Failed to track import on backend');
+            });
         } catch (error) {
             console.error('导入Excel文件时出错:', error);
             alert('导入失败: ' + error.message);
