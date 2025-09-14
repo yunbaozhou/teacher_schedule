@@ -38,6 +38,7 @@ function updateStatisticsDisplay() {
     document.getElementById('word-count').textContent = statistics.export.word;
     document.getElementById('image-count').textContent = statistics.export.image;
     document.getElementById('print-count').textContent = statistics.export.print;
+    document.getElementById('import-count').textContent = statistics.import;
     document.getElementById('total-count').textContent = statistics.total;
 }
 

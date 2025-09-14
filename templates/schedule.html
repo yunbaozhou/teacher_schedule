@@ -24,7 +24,7 @@
             <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                 <i class="fas fa-chart-bar mr-2 text-indigo-500"></i>使用统计
             </h2>
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
                 <div class="bg-purple-100 p-4 rounded-lg text-center">
                     <div class="text-2xl font-bold text-purple-800" id="image-count">0</div>
                     <div class="text-sm text-purple-600">图片导出</div>
@@ -41,6 +41,10 @@
                 <div class="bg-yellow-100 p-4 rounded-lg text-center">
                     <div class="text-2xl font-bold text-yellow-800" id="print-count">0</div>
                     <div class="text-sm text-yellow-600">打印次数</div>
+                </div>
+                <div class="bg-pink-100 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-pink-800" id="import-count">0</div>
+                    <div class="text-sm text-pink-600">导入次数</div>
                 </div>
                 <div class="bg-indigo-100 p-4 rounded-lg text-center">
                     <div class="text-2xl font-bold text-indigo-800" id="total-count">0</div>
@@ -387,11 +391,11 @@
 
     <script>
         // Add statistics panel functionality
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Load initial statistics
             loadStatisticsPanel();
         });
-
+        
         function loadStatisticsPanel() {
             fetch('/api/statistics')
                 .then(response => response.json())
@@ -400,6 +404,7 @@
                     document.getElementById('word-count').textContent = data.export_stats.word || 0;
                     document.getElementById('image-count').textContent = data.export_stats.image || 0;
                     document.getElementById('print-count').textContent = data.export_stats.print || 0;
+                    document.getElementById('import-count').textContent = data.import_stats.total || 0;
                     document.getElementById('total-count').textContent = data.total_usage || 0;
                 })
                 .catch(error => {
