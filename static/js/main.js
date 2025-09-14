@@ -1,6 +1,7 @@
 // 全局变量存储课程数据
 let courseData = [];
 let userSelectedColors = {};
+let statisticsPanelLoaded = false; // 标记统计面板是否已加载
 
 // 统计数据
 let statistics = {
@@ -26,6 +27,27 @@ function loadStatistics() {
             statistics.import = data.import_stats.total || 0;
             statistics.total = data.total_usage || 0;
             updateStatisticsDisplay();
+            statisticsPanelLoaded = true; // 标记为已加载
+
+            // 设置定时器，每30秒自动刷新一次统计面板
+            if (!window.statisticsRefreshInterval) {
+                window.statisticsRefreshInterval = setInterval(() => {
+                    fetch('/api/statistics')
+                        .then(response => response.json())
+                        .then(data => {
+                            statistics.export.excel = data.export_stats.excel || 0;
+                            statistics.export.word = data.export_stats.word || 0;
+                            statistics.export.image = data.export_stats.image || 0;
+                            statistics.export.print = data.export_stats.print || 0;
+                            statistics.import = data.import_stats.total || 0;
+                            statistics.total = data.total_usage || 0;
+                            updateStatisticsDisplay();
+                        })
+                        .catch(error => {
+                            console.error('Error refreshing statistics:', error);
+                        });
+                }, 30000); // 30秒
+            }
         })
         .catch(error => {
             console.error('Error loading statistics:', error);
@@ -231,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('copy-course').addEventListener('click', copyCourse);
     document.getElementById('paste-course').addEventListener('click', pasteCourse);
     
-    // 加载统计数据
+    // 加载统计数据（初始化）
     loadStatistics();
 });
 
@@ -991,7 +1013,7 @@ function exportToExcel() {
     })
     .then(response => {
         if (response.ok) {
-            // 更新统计数据并重新加载
+            // 更新统计数据并重新加载（自动刷新统计面板）
             loadStatistics();
             return response.blob();
         }
@@ -1182,7 +1204,7 @@ function exportToImage() {
             body: JSON.stringify({})
         }).then(response => {
             if (response.ok) {
-                // 更新统计数据并重新加载
+                // 更新统计数据并重新加载（自动刷新统计面板）
                 loadStatistics();
             }
         }).catch(error => {
@@ -1365,7 +1387,7 @@ function importFromExcel(event) {
                 body: JSON.stringify({})
             }).then(response => {
                 if (response.ok) {
-                    // 更新统计数据并重新加载
+                    // 更新统计数据并重新加载（自动刷新统计面板）
                     loadStatistics();
                 }
             }).catch(error => {

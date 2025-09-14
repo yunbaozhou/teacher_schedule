@@ -1,12 +1,12 @@
 {
   "export_stats": {
-    "excel": 14,
-    "word": 8,
-    "image": 16,
-    "print": 3
+    "excel": 16,
+    "word": 10,
+    "image": 22,
+    "print": 7
   },
   "import_stats": {
-    "total": 26
+    "total": 31
   },
   "usage_history": [
     {
@@ -98,6 +98,6 @@
       "timestamp": "2025-09-14T09:50:22.598590"
     }
   ],
-  "last_updated": "2025-09-14T19:15:57.382777",
-  "total_usage": 66
+  "last_updated": "2025-09-14T19:28:30.183173",
+  "total_usage": 85
 }

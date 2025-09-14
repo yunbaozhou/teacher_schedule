@@ -31,9 +31,6 @@
         <div class="glassmorphism p-6 mb-8 rounded-xl">
             <h2 class="text-2xl font-semibold text-gray-800 mb-5 flex items-center">
                 <i class="fas fa-chart-bar mr-3 text-indigo-600"></i>使用统计
-                <button id="refresh-stats" class="ml-4 text-sm bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 text-gray-800 py-1.5 px-3 rounded-lg transition-all duration-300 shadow">
-                    <i class="fas fa-sync-alt"></i> 刷新
-                </button>
             </h2>
             <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
                 <div class="stat-card bg-gradient-to-br from-purple-50 to-purple-100 p-5 rounded-xl text-center shadow">
@@ -404,27 +401,8 @@
         // Add statistics panel functionality
         document.addEventListener('DOMContentLoaded', function() {
             // Load initial statistics
-            loadStatisticsPanel();
-            
-            // Bind refresh button
-            document.getElementById('refresh-stats').addEventListener('click', loadStatisticsPanel);
+            loadStatistics();
         });
-        
-        function loadStatisticsPanel() {
-            fetch('/api/statistics')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('excel-count').textContent = data.export_stats.excel || 0;
-                    document.getElementById('word-count').textContent = data.export_stats.word || 0;
-                    document.getElementById('image-count').textContent = data.export_stats.image || 0;
-                    document.getElementById('print-count').textContent = data.export_stats.print || 0;
-                    document.getElementById('import-count').textContent = data.import_stats.total || 0;
-                    document.getElementById('total-count').textContent = data.total_usage || 0;
-                })
-                .catch(error => {
-                    console.error('Error loading statistics:', error);
-                });
-        }
     </script>
 </body>
 
