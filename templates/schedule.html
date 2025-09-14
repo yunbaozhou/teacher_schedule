@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>课程表生成工具</title>
+    <link rel="icon" href="{{ url_for('static', filename='img/icon.png') }}" type="image/png">
     <script src="https://cdn.tailwindcss.com/3.3.3"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -21,7 +22,8 @@
             </div>
             <div class="relative z-10">
                 <h1 class="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-800 via-blue-600 to-blue-800 mb-4 tracking-wide">
-                    <i class="fas fa-calendar-alt mr-4"></i>课程表生成工具
+                    <!-- <i class="fas fa-calendar-alt mr-4"></i> -->
+                    <img src="{{ url_for('static', filename='img/icon.png') }}" alt="课程表生成工具" class="inline h-16 w-16 mr-4">课程表生成工具
                 </h1>
                 <div class="w-32 h-1 bg-gradient-to-r from-transparent via-blue-400 to-transparent mx-auto mb-4 rounded-full"></div>
                 <p class="text-blue-900 text-xl md:text-2xl font-light tracking-wider">快速创建并导出个性化课程表</p>
